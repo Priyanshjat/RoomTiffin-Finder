@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #FAF7F2;
+    color: #2B2118;
+    font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+/* Marquee infinite scroll for Indore flavor band */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Sathi AI ambient glow pulsing */
+@keyframes sathiGlow {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(230, 126, 34, 0.25), 0 0 50px rgba(13, 148, 136, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(230, 126, 34, 0.45), 0 0 70px rgba(13, 148, 136, 0.25);
+  }
+}
+
+.sathi-glow {
+  animation: sathiGlow 4s ease-in-out infinite;
+}
+
+/* Custom smooth transitions */
+.transition-smooth {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.local
+.DS_Store
+dist/
+dist-ssr/
+*.local
+server/uploads/*
+!server/uploads/.gitkeep
+package-lock.json
+client/package-lock.json
+server/package-lock.json
