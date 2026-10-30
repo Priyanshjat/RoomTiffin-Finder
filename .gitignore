@@ -7,6 +7,4 @@ dist-ssr/
 *.local
 server/uploads/*
 !server/uploads/.gitkeep
-package-lock.json
-client/package-lock.json
-server/package-lock.json
+
