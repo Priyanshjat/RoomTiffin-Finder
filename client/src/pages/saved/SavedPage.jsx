@@ -25,7 +25,7 @@ const SavedPage = () => {
           </div>
           <h2 className="font-serif text-2xl font-bold text-espresso">Save Your Favorite Discoveries</h2>
           <p className="text-xs text-espresso-muted leading-relaxed">
-            Sign in to bookmark rooms, meal plans, rental vehicles, and laptops across Bengaluru to access them anytime.
+            Sign in to bookmark rooms and meal plans across Indore to access them anytime.
           </p>
           <button
             onClick={() => dispatch(openLoginModal('Sign in to view and manage your saved listings.'))}
@@ -77,7 +77,7 @@ const SavedPage = () => {
             <Heart className="w-10 h-10 text-sandstone-border mx-auto stroke-1" />
             <h3 className="font-serif font-bold text-lg text-espresso">No Saved Listings Yet</h3>
             <p className="text-xs text-espresso-muted">
-              Browse rooms, meal plans, vehicles, and laptops and click "Save" to build your short list.
+              Browse rooms and meal plans and click "Save" to build your short list.
             </p>
             <Link
               to="/"

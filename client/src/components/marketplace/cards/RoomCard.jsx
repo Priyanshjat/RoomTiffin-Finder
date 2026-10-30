@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { openLoginModal } from '../../../redux/features/ui/uiSlice.js'
+import { listingMainImage } from '../../../utils/listingImages.js'
 import {
   Star,
   MapPin,
@@ -32,9 +33,7 @@ const RoomCard = ({ listing, onSelect }) => {
     }
   }
 
-  const mainImage = listing.images && listing.images[0]
-    ? listing.images[0]
-    : 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80'
+  const mainImage = listingMainImage(listing, 'rooms')
 
   return (
     <article

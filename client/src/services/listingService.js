@@ -30,10 +30,10 @@ export const requestBooking = async (data) => {
   return response.data
 }
 
-// Create vehicle / laptop rental request
-export const submitRentalRequest = async (data) => {
-  const response = await API.post('/rental-requests', data)
-  return response.data
+// Fetch current user's room tour / meal trial requests
+export const fetchMyBookings = async () => {
+  const response = await API.get('/bookings/my')
+  return response.data.data || response.data
 }
 
 // Fetch Indore Areas
@@ -54,23 +54,16 @@ export const fetchColleges = async () => {
   return response.data.data || response.data
 }
 
-// Sathi AI Bundle Recommender
-export const recommendBundle = async (payload) => {
-  const response = await API.post('/ai/recommend', payload)
-  return response.data.data || response.data
-}
-
 const listingService = {
   fetchListings,
   fetchListingById,
   parseAiQuery,
   sendContactInquiry,
   requestBooking,
-  submitRentalRequest,
+  fetchMyBookings,
   fetchAreas,
   fetchAreaBySlug,
-  fetchColleges,
-  recommendBundle
+  fetchColleges
 }
 
 export default listingService

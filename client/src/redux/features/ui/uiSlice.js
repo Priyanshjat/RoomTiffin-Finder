@@ -2,11 +2,13 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const savedLanguage = typeof window !== 'undefined' ? (localStorage.getItem('rt_lang') || 'en') : 'en'
 const savedMotion = typeof window !== 'undefined' ? (localStorage.getItem('rt_reduce_motion') === 'true') : false
+const savedTheme = typeof window !== 'undefined' ? (localStorage.getItem('rt_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) : 'light'
 
 const initialState = {
-  activeCategory: 'rooms', // 'rooms' | 'tiffin' | 'vehicles' | 'laptops'
+  activeCategory: 'rooms', // 'rooms' | 'tiffin'
   language: savedLanguage, // 'en' | 'hi'
   reduceMotion: savedMotion,
+  theme: savedTheme, // 'light' | 'dark'
   isLoginModalOpen: false,
   loginModalMessage: '',
   isReferralModalOpen: false,
@@ -25,6 +27,13 @@ export const uiSlice = createSlice({
       state.language = state.language === 'en' ? 'hi' : 'en'
       if (typeof window !== 'undefined') {
         localStorage.setItem('rt_lang', state.language)
+      }
+    },
+    toggleTheme: (state) => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark'
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rt_theme', state.theme)
+        document.documentElement.classList.toggle('dark', state.theme === 'dark')
       }
     },
     setLanguage: (state, action) => {
@@ -76,6 +85,7 @@ export const {
   setActiveCategory,
   toggleLanguage,
   setLanguage,
+  toggleTheme,
   toggleReduceMotion,
   setReduceMotion,
   openLoginModal,

@@ -1,6 +1,8 @@
 import Tiffin from "../../models/tiffinModel.js"
 import { mockTiffins } from "../../data/mockData.js"
 import mongoose from "mongoose"
+import { pickUniqueImage } from "../../services/listingImages.js"
+import { getUsedImageKeys } from "../../services/usedImages.js"
 
 // In-memory array for newly created tiffins during fallback
 let localTiffins = [...mockTiffins]
@@ -137,6 +139,11 @@ const createTiffin = async (req, res) => {
         throw new Error("Please Fill All Details!")
     }
 
+    // Every new tiffin gets its own food photo - never one already used elsewhere
+    const tiffinImages = images && images.length > 0
+        ? images
+        : [pickUniqueImage(await getUsedImageKeys(), "tiffin")]
+
     const tiffinData = {
         name,
         description,
@@ -148,9 +155,7 @@ const createTiffin = async (req, res) => {
         mealSchedule: Array.isArray(mealSchedule) ? mealSchedule : ["Lunch", "Dinner"],
         menuHighlights: Array.isArray(menuHighlights) ? menuHighlights : (menuHighlights ? menuHighlights.split(",") : []),
         weeklyMenu: weeklyMenu || {},
-        images: images && images.length > 0 ? images : [
-            "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80"
-        ],
+        images: tiffinImages,
         owner: req.user._id,
         isAvailable: true,
         rating: 4.9,

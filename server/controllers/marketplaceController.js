@@ -1,20 +1,23 @@
 import store from "../services/marketplaceStore.js"
-import jwt from "jsonwebtoken"
 import { INDORE_AREAS, INDORE_COLLEGES } from "../data/indoreAreas.js"
+import Booking from "../models/bookingModel.js"
+import { getCombinedListings, getListingByIdFromAnySource } from "../services/catalogService.js"
+import {
+    resolveUser,
+    debitWallet,
+    getWalletView,
+    getReferralStatsForUser,
+    getReferralHistoryForUser,
+    applyReferralCodeToUser,
+    triggerReferralCompletion,
+    getFavoritesForUser,
+    addFavoriteForUser,
+    removeFavoriteForUser
+} from "../services/userContext.js"
 
 // Helper to extract authenticated user or null
-export const getAuthUser = (req) => {
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return null
-  const token = authHeader.split(" ")[1]
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "supersecretjwtkey_roomtiffin_2026")
-    return store.findUserById(decoded.id) || null
-  } catch (err) {
-    return null
-  }
-}
+//Resolved against MongoDB users first, in-memory store users as fallback
+export const getAuthUser = (req) => resolveUser(req)
 
 // Mask private data for guests per GUEST PRIVACY RULE
 export const applyGuestPrivacy = (listing, isAuthed) => {
@@ -41,10 +44,11 @@ export const applyGuestPrivacy = (listing, isAuthed) => {
 
 // GET /api/listings
 export const getListings = async (req, res) => {
-  const { category, search, neighborhood, maxBudget, minBudget, foodType, roomType, vehicleType, transmission, brand, tag } = req.query
-  const authedUser = getAuthUser(req)
+  const { category, search, neighborhood, maxBudget, minBudget, foodType, roomType, transmission, brand, tag } = req.query
+  const authedUser = await getAuthUser(req)
 
-  let result = [...store.listings]
+  const catalog = await getCombinedListings()
+  let result = [...catalog]
 
   // Filter by category
   if (category && category !== "all") {
@@ -96,19 +100,6 @@ export const getListings = async (req, res) => {
   if (roomType && roomType !== "all") {
     result = result.filter(item => item.roomType === roomType.toLowerCase())
   }
-  if (vehicleType && vehicleType !== "all") {
-    result = result.filter(item => item.vehicleType && item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase()))
-  }
-  if (transmission && transmission !== "all") {
-    result = result.filter(item => item.transmission && item.transmission.toLowerCase().includes(transmission.toLowerCase()))
-  }
-  if (brand && brand !== "all") {
-    result = result.filter(item =>
-      item.title.toLowerCase().includes(brand.toLowerCase()) ||
-      (item.specs && item.specs["Brand & Model"]?.toLowerCase().includes(brand.toLowerCase())) ||
-      (item.brand && item.brand.toLowerCase() === brand.toLowerCase())
-    )
-  }
 
   const safeListings = result.map(l => applyGuestPrivacy(l, Boolean(authedUser)))
 
@@ -122,9 +113,9 @@ export const getListings = async (req, res) => {
 // GET /api/listings/:id
 export const getListingById = async (req, res) => {
   const { id } = req.params
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
-  const found = store.listings.find(l => l.id === id || l._id === id)
+  const found = await getListingByIdFromAnySource(id)
 
   if (!found) {
     return res.status(404).json({
@@ -143,7 +134,7 @@ export const getListingById = async (req, res) => {
 
 // POST /api/auth/signup (and /api/auth/register)
 export const signup = async (req, res) => {
-  const { name, email, password, phone, referralCode, userType } = req.body
+  const { name, email, password, phone, referralCode } = req.body
 
   if (!name || !email || !password) {
     return res.status(400).json({
@@ -160,7 +151,8 @@ export const signup = async (req, res) => {
       phone,
       password,
       referralCode,
-      userType
+      // Public signup is always USER — provider/admin roles are granted later.
+      userType: "USER"
     })
 
     res.status(201).json({
@@ -225,7 +217,7 @@ export const demoLogin = async (req, res) => {
 
 // GET /api/auth/me
 export const getMe = async (req, res) => {
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -247,7 +239,7 @@ export const getMe = async (req, res) => {
 // POST /api/contact
 export const contactProvider = async (req, res) => {
   const { listingId, message } = req.body
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!listingId) {
     return res.status(400).json({
@@ -271,7 +263,7 @@ export const contactProvider = async (req, res) => {
 // POST /api/bookings (Room Tour / Meal Trial)
 export const createBooking = async (req, res) => {
   const { listingId, category, date, slot, notes, applyCredit = 0 } = req.body
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!listingId) {
     return res.status(400).json({
@@ -286,21 +278,41 @@ export const createBooking = async (req, res) => {
 
   if (authedUser) {
     if (applyCredit > 0) {
-      discountApplied = store.applyWalletDiscount(authedUser._id, applyCredit)
+      discountApplied = await debitWallet(authedUser, applyCredit)
     }
     // Check if this fulfills a first request referral completion
-    store.checkAndTriggerReferralCompletion(authedUser._id)
+    await triggerReferralCompletion(authedUser)
+  }
+
+  const bookingPayload = {
+    listingId,
+    category: category || "rooms",
+    listingType: category === "tiffin" ? "tiffin" : "room",
+    date: date || new Date().toISOString().split("T")[0],
+    slot: slot || "Morning (10:00 AM - 12:00 PM)",
+    notes: notes || "",
+    discountApplied,
+    status: "CONFIRMED"
+  }
+
+  // MongoDB-persisted path (user attached)
+  if (authedUser && authedUser.__source === "mongo") {
+    try {
+      const doc = await Booking.create({ user: authedUser._id, ...bookingPayload })
+      return res.status(201).json({
+        success: true,
+        message: `${actionName} requested successfully! Provider has been notified.${discountApplied > 0 ? ` ₹${discountApplied} wallet credit applied!` : ""}`,
+        data: { ...doc.toObject(), bookingId: String(doc._id) }
+      })
+    } catch (dbErr) {
+      console.log("Booking DB fallback:", dbErr.message)
+    }
   }
 
   const booking = {
     bookingId: "bk_" + Date.now(),
-    listingId,
-    category: category || "rooms",
-    date: date || new Date().toISOString().split("T")[0],
-    slot: slot || "Morning (10:00 AM - 12:00 PM)",
-    notes,
-    discountApplied,
-    status: "CONFIRMED",
+    userId: authedUser ? String(authedUser._id || authedUser.id) : null,
+    ...bookingPayload,
     createdAt: new Date().toISOString()
   }
 
@@ -313,53 +325,9 @@ export const createBooking = async (req, res) => {
   })
 }
 
-// POST /api/rental-requests (Vehicle / Laptop)
-export const createRentalRequest = async (req, res) => {
-  const { listingId, category, duration, startDate, deliveryOption, applyCredit = 0 } = req.body
-  const authedUser = getAuthUser(req)
-
-  if (!listingId) {
-    return res.status(400).json({
-      success: false,
-      message: "Listing ID is required",
-      data: null
-    })
-  }
-
-  const actionName = category === "vehicles" ? "Vehicle Rental" : "Laptop Rental"
-  let discountApplied = 0
-
-  if (authedUser) {
-    if (applyCredit > 0) {
-      discountApplied = store.applyWalletDiscount(authedUser._id, applyCredit)
-    }
-    store.checkAndTriggerReferralCompletion(authedUser._id)
-  }
-
-  const requestRecord = {
-    requestId: "req_" + Date.now(),
-    listingId,
-    category: category || "vehicles",
-    duration: duration || "1 Week",
-    startDate: startDate || new Date().toISOString().split("T")[0],
-    deliveryOption: deliveryOption || "Doorstep Delivery",
-    discountApplied,
-    status: "CONFIRMED",
-    createdAt: new Date().toISOString()
-  }
-
-  store.rentalRequests.push(requestRecord)
-
-  res.status(201).json({
-    success: true,
-    message: `${actionName} placed successfully! Provider will coordinate handover via WhatsApp.${discountApplied > 0 ? ` ₹${discountApplied} wallet credit applied!` : ""}`,
-    data: requestRecord
-  })
-}
-
 // GET /api/referrals/me
 export const getReferralMe = async (req, res) => {
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -369,7 +337,7 @@ export const getReferralMe = async (req, res) => {
     })
   }
 
-  const stats = store.getReferralStats(authedUser._id)
+  const stats = await getReferralStatsForUser(authedUser)
 
   res.status(200).json({
     success: true,
@@ -380,7 +348,7 @@ export const getReferralMe = async (req, res) => {
 
 // GET /api/referrals/history
 export const getReferralHistory = async (req, res) => {
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -390,7 +358,7 @@ export const getReferralHistory = async (req, res) => {
     })
   }
 
-  const history = store.getReferralHistory(authedUser._id)
+  const history = await getReferralHistoryForUser(authedUser)
 
   res.status(200).json({
     success: true,
@@ -402,7 +370,7 @@ export const getReferralHistory = async (req, res) => {
 // POST /api/referrals/apply
 export const applyReferralCode = async (req, res) => {
   const { code } = req.body
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -421,7 +389,7 @@ export const applyReferralCode = async (req, res) => {
   }
 
   try {
-    const result = store.applyReferralCodeForUser(authedUser._id, code)
+    const result = await applyReferralCodeToUser(authedUser, code)
     res.status(200).json({
       success: true,
       message: result.message,
@@ -467,7 +435,7 @@ export const validateReferralCode = async (req, res) => {
 
 // GET /api/wallet
 export const getWallet = async (req, res) => {
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -477,7 +445,7 @@ export const getWallet = async (req, res) => {
     })
   }
 
-  const wallet = store.getWallet(authedUser._id)
+  const wallet = await getWalletView(authedUser)
 
   res.status(200).json({
     success: true,
@@ -488,7 +456,7 @@ export const getWallet = async (req, res) => {
 
 // GET /api/favorites
 export const getFavorites = async (req, res) => {
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(200).json({
@@ -498,7 +466,7 @@ export const getFavorites = async (req, res) => {
     })
   }
 
-  const favorites = store.getFavorites(authedUser._id)
+  const favorites = await getFavoritesForUser(authedUser)
 
   res.status(200).json({
     success: true,
@@ -510,7 +478,7 @@ export const getFavorites = async (req, res) => {
 // POST /api/favorites
 export const addFavorite = async (req, res) => {
   const { listingId } = req.body
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -528,7 +496,7 @@ export const addFavorite = async (req, res) => {
     })
   }
 
-  const updatedFavs = store.addFavorite(authedUser._id, listingId)
+  const updatedFavs = await addFavoriteForUser(authedUser, listingId)
 
   res.status(200).json({
     success: true,
@@ -540,7 +508,7 @@ export const addFavorite = async (req, res) => {
 // DELETE /api/favorites/:id
 export const removeFavorite = async (req, res) => {
   const { id } = req.params
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
 
   if (!authedUser) {
     return res.status(401).json({
@@ -550,7 +518,7 @@ export const removeFavorite = async (req, res) => {
     })
   }
 
-  const updatedFavs = store.removeFavorite(authedUser._id, id)
+  const updatedFavs = await removeFavoriteForUser(authedUser, id)
 
   res.status(200).json({
     success: true,
@@ -579,13 +547,14 @@ export const getAreaBySlug = async (req, res) => {
     })
   }
 
-  const authedUser = getAuthUser(req)
+  const authedUser = await getAuthUser(req)
   const isAuthed = Boolean(authedUser)
 
   const areaNameCore = area.name.split(' ')[0].toLowerCase()
 
-  // Find listings in this area
-  const areaListings = store.listings
+  // Find listings in this area (real + mock catalog)
+  const catalog = await getCombinedListings()
+  const areaListings = catalog
     .filter(l => {
       const matchNeigh = l.neighborhood && l.neighborhood.toLowerCase().includes(areaNameCore)
       const matchApprox = l.approxLocation && l.approxLocation.toLowerCase().includes(areaNameCore)
@@ -607,6 +576,65 @@ export const getColleges = async (req, res) => {
   res.status(200).json({
     success: true,
     data: INDORE_COLLEGES
+  })
+}
+
+// GET /api/bookings/my — current user's room tour & meal trial requests
+export const getMyBookings = async (req, res) => {
+  const authedUser = await getAuthUser(req)
+
+  if (!authedUser) {
+    return res.status(401).json({
+      success: false,
+      message: "Sign in to view your requests.",
+      data: null
+    })
+  }
+
+  let records = []
+
+  if (authedUser.__source === "mongo") {
+    try {
+      records = await Booking.find({ user: authedUser._id }).sort({ createdAt: -1 }).lean()
+    } catch (err) {
+      console.log("My bookings DB fallback:", err.message)
+    }
+  }
+
+  if (records.length === 0) {
+    const uid = String(authedUser._id || authedUser.id)
+    records = store.bookings
+      .filter(b => String(b.userId) === uid)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  }
+
+  // Enrich each booking with its listing snapshot for display
+  const data = await Promise.all(records.map(async (b) => {
+    const listing = await getListingByIdFromAnySource(b.listingId)
+    return {
+      id: String(b._id || b.bookingId),
+      bookingType: "booking",
+      listingId: b.listingId,
+      category: b.category,
+      type: b.category === "tiffin" ? "Sample Meal Trial Box" : "Room Tour Visit",
+      title: listing?.title || "Listing",
+      date: b.date,
+      slot: b.slot,
+      location: listing?.approxLocation || listing?.neighborhood || "",
+      image: listing?.images?.[0] || null,
+      host: listing?.provider?.name || "Provider",
+      hostPhone: listing?.provider?.phone || "",
+      discountApplied: b.discountApplied || 0,
+      notes: b.notes || "",
+      status: b.status,
+      createdAt: b.createdAt
+    }
+  }))
+
+  res.status(200).json({
+    success: true,
+    message: "Requests fetched successfully",
+    data
   })
 }
 

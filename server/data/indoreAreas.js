@@ -22,8 +22,6 @@ export const INDORE_AREAS = [
     listingCount: {
       rooms: 18,
       tiffin: 12,
-      vehicles: 8,
-      laptops: 7
     }
   },
   {
@@ -37,7 +35,6 @@ export const INDORE_AREAS = [
       "Premium AC coliving spaces with housekeeping",
       "Proximity to Brilliant Convention Centre & IT parks",
       "Next to C21, Malhar Mall & Phoenix Citadel",
-      "High concentration of scooter & car rental hubs",
       "Upcoming Indore Metro station stop"
     ],
     averageRent: "₹8,500 - ₹16,000 / month",
@@ -47,8 +44,6 @@ export const INDORE_AREAS = [
     listingCount: {
       rooms: 24,
       tiffin: 15,
-      vehicles: 14,
-      laptops: 11
     }
   },
   {
@@ -72,8 +67,6 @@ export const INDORE_AREAS = [
     listingCount: {
       rooms: 14,
       tiffin: 10,
-      vehicles: 9,
-      laptops: 8
     }
   },
   {
@@ -86,19 +79,16 @@ export const INDORE_AREAS = [
     highlights: [
       "Minutes away from IPS Academy & Medi-Caps",
       "Super affordable student apartment sharing",
-      "High availability of Activa and bike rentals",
       "Quiet suburban environment away from city congestion",
       "Direct bypass access to IIM Indore & CAT"
     ],
     averageRent: "₹4,000 - ₹7,500 / month",
-    popularFor: ["Engineering & MBA Students", "IPS Academy Scholars", "Medi-Caps Students", "Bike Renters"],
+    popularFor: ["Engineering & MBA Students", "IPS Academy Scholars", "Medi-Caps Students"],
     topColleges: ["IPS Academy", "Medi-Caps University", "IIM Indore (Rau Bypass)", "Sage University"],
     nearbyTransit: ["Rau Circle", "Silicon City Gate", "Rajendra Nagar Railway Station"],
     listingCount: {
       rooms: 20,
       tiffin: 11,
-      vehicles: 12,
-      laptops: 6
     }
   },
   {
@@ -122,8 +112,6 @@ export const INDORE_AREAS = [
     listingCount: {
       rooms: 12,
       tiffin: 9,
-      vehicles: 6,
-      laptops: 5
     }
   },
   {
@@ -137,7 +125,6 @@ export const INDORE_AREAS = [
       "Planned IDA layouts with wide tree-lined avenues",
       "Modern independent builder floors & studio rooms",
       "Close to Bombay Hospital & Sayaji Hotel",
-      "High concentration of laptop & tech rentals",
       "Peaceful residential vibe with quick commercial access"
     ],
     averageRent: "₹7,500 - ₹14,000 / month",
@@ -147,8 +134,6 @@ export const INDORE_AREAS = [
     listingCount: {
       rooms: 16,
       tiffin: 10,
-      vehicles: 8,
-      laptops: 9
     }
   }
 ]
@@ -160,7 +145,7 @@ export const INDORE_COLLEGES = [
     shortName: "DAVV",
     area: "Bhawarkuan",
     address: "Khandwa Road, Bhawarkuan, Indore",
-    popularNeeds: ["room", "tiffin", "vehicle"],
+    popularNeeds: ["room", "tiffin"],
     recommendedAreas: ["bhawarkuan", "geeta-bhawan"],
     avgStudentBudget: 9500
   },
@@ -170,7 +155,7 @@ export const INDORE_COLLEGES = [
     shortName: "SGSITS",
     area: "Palasia / Vallabh Nagar",
     address: "23 Sir M. Visvesvaraya Marg, Vallabh Nagar, Indore",
-    popularNeeds: ["room", "laptop", "tiffin"],
+    popularNeeds: ["room", "tiffin"],
     recommendedAreas: ["palasia", "geeta-bhawan"],
     avgStudentBudget: 11000
   },
@@ -180,7 +165,7 @@ export const INDORE_COLLEGES = [
     shortName: "IPS Academy",
     area: "Rau",
     address: "Knowledge Village, Rajendra Nagar, AB Road, Indore",
-    popularNeeds: ["room", "vehicle", "tiffin"],
+    popularNeeds: ["room", "tiffin"],
     recommendedAreas: ["rau", "bhawarkuan"],
     avgStudentBudget: 8500
   },
@@ -190,7 +175,7 @@ export const INDORE_COLLEGES = [
     shortName: "Medi-Caps",
     area: "Rau",
     address: "AB Road, Pigdamber, Rau, Indore",
-    popularNeeds: ["room", "vehicle", "tiffin", "laptop"],
+    popularNeeds: ["room", "tiffin"],
     recommendedAreas: ["rau"],
     avgStudentBudget: 9000
   },
@@ -200,7 +185,7 @@ export const INDORE_COLLEGES = [
     shortName: "IIT Indore",
     area: "Simrol / Khandwa Road",
     address: "Khandwa Road, Simrol, Indore",
-    popularNeeds: ["laptop", "vehicle", "room"],
+    popularNeeds: ["room"],
     recommendedAreas: ["bhawarkuan", "rau"],
     avgStudentBudget: 12000
   },
@@ -210,7 +195,7 @@ export const INDORE_COLLEGES = [
     shortName: "Prestige",
     area: "Vijay Nagar",
     address: "Sector 54, Vijay Nagar, Indore",
-    popularNeeds: ["room", "laptop", "tiffin"],
+    popularNeeds: ["room", "tiffin"],
     recommendedAreas: ["vijay-nagar", "scheme-78"],
     avgStudentBudget: 14000
   }

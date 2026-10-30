@@ -11,8 +11,6 @@ import {
   CheckCircle2,
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   Shield,
   Gift,
   Clock,
@@ -29,21 +27,18 @@ import {
 const INDORE_PROMPTS = [
   "single room with WiFi near Vijay Nagar under 8000",
   "pure veg tiffin near Bhawarkuan for coaching",
-  "automatic scooty for a week near Palasia",
-  "laptop for coding near IIT Indore under 300 a day",
-  "first year at DAVV: need room + tiffin + scooty bundle under 15000"
+  "verified PG near Palasia with attached bathroom",
+  "cheapest 1bhk near Geeta Bhawan for couple"
 ]
 
 // Click-to-try quick pills
 const QUICK_PILLS = [
-  { label: "DAVV Fresher bundle", query: "first year at DAVV: need room + tiffin + scooty bundle under 15000" },
   { label: "Bhawarkuan UPSC aspirant", query: "single room near Bhawarkuan with pure veg tiffin under 10000" },
-  { label: "Vijay Nagar techie", query: "coliving room in Vijay Nagar with ThinkPad laptop" },
-  { label: "Pure Veg tiffin trial", query: "pure veg tiffin near Palasia with home trial" },
-  { label: "Weekend Mandu bike ride", query: "Royal Enfield bike for weekend near Palasia" }
+  { label: "Vijay Nagar techie", query: "coliving room in Vijay Nagar with fiber WiFi" },
+  { label: "Pure Veg tiffin trial", query: "pure veg tiffin near Palasia with home trial" }
 ]
 
-// College Starter Pack Presets
+// College Campus Picks
 const COLLEGE_PRESETS = [
   {
     id: "davv",
@@ -51,11 +46,7 @@ const COLLEGE_PRESETS = [
     area: "Bhawarkuan / Khandwa Rd",
     dist: "350m from gate",
     room: { name: "Serene Nest Student PG", price: "₹7,500/mo", note: "350m from Takshashila campus, fiber WiFi & study desk" },
-    tiffin: { name: "Annapurna Ghar Se Tiffin", price: "₹2,600/mo", note: "Malwi home food, Indori Poha & Sunday Dal Baati" },
-    ride: { name: "Honda Activa 6G", price: "₹4,800/mo", note: "Instant KYC, 2 ISI helmets, covers Khandwa Rd corridor" },
-    total: "₹14,900",
-    combo: "₹13,500/mo",
-    save: "₹1,400"
+    tiffin: { name: "Annapurna Ghar Se Tiffin", price: "₹2,600/mo", note: "Malwi home food, Indori Poha & Sunday Dal Baati" }
   },
   {
     id: "sgsits",
@@ -63,11 +54,7 @@ const COLLEGE_PRESETS = [
     area: "Vallabh Nagar / Palasia",
     dist: "800m from campus",
     room: { name: "Greenwood Executive Residency", price: "₹12,500/mo", note: "Saket Club road, quiet studio with AC & power backup" },
-    tiffin: { name: "Marwar Kitchen High-Protein", price: "₹3,200/mo", note: "High protein paneer & dal delivered to hostel gate" },
-    ride: { name: "Lenovo ThinkPad X1 Carbon", price: "₹5,400/mo", note: "i7 16GB dev ultrabook for coding assignments" },
-    total: "₹21,100",
-    combo: "₹18,999/mo",
-    save: "₹2,101"
+    tiffin: { name: "Marwar Kitchen High-Protein", price: "₹3,200/mo", note: "High protein paneer & dal delivered to hostel gate" }
   },
   {
     id: "ips",
@@ -75,11 +62,7 @@ const COLLEGE_PRESETS = [
     area: "Rau / AB Road",
     dist: "500m from Knowledge Village",
     room: { name: "Lakeview Scholar PG", price: "₹5,500/mo", note: "Silicon City, 2-sharing student room with 3 meals" },
-    tiffin: { name: "In-house PG Meals", price: "Included", note: "Wholesome breakfast, lunch and dinner included in rent" },
-    ride: { name: "Honda Activa 6G", price: "₹4,800/mo", note: "Perfect for Rajendra Nagar & bypass transit" },
-    total: "₹10,300",
-    combo: "₹9,500/mo",
-    save: "₹800"
+    tiffin: { name: "In-house PG Meals", price: "Included", note: "Wholesome breakfast, lunch and dinner included in rent" }
   },
   {
     id: "medicaps",
@@ -87,11 +70,7 @@ const COLLEGE_PRESETS = [
     area: "Rau / Pigdamber",
     dist: "600m from main block",
     room: { name: "Lakeview Scholar PG", price: "₹5,500/mo", note: "Quiet academic setting near Pigdamber bypass" },
-    tiffin: { name: "Swad Mandir Pure Jain / Veg", price: "₹2,900/mo", note: "Sattvic dabba delivered fresh daily" },
-    ride: { name: "Dell Inspiron 14", price: "₹3,600/mo", note: "Preloaded with MS Office & Python coursework tools" },
-    total: "₹12,000",
-    combo: "₹10,800/mo",
-    save: "₹1,200"
+    tiffin: { name: "Swad Mandir Pure Jain / Veg", price: "₹2,900/mo", note: "Sattvic dabba delivered fresh daily" }
   },
   {
     id: "iit-indore",
@@ -99,11 +78,7 @@ const COLLEGE_PRESETS = [
     area: "Simrol / Khandwa Road",
     dist: "Campus transport synced",
     room: { name: "Urban Haven Coliving", price: "₹9,500/mo", note: "Weekend tech base in Vijay Nagar with gym & lounge" },
-    tiffin: { name: "Marwar Kitchen Co.", price: "₹3,200/mo", note: "Doorstep high protein lunch & dinner dabba" },
-    ride: { name: "Royal Enfield Classic 350", price: "₹12,500/mo", note: "Stealth matte black cruiser for Khandwa Rd commute" },
-    total: "₹25,200",
-    combo: "₹22,999/mo",
-    save: "₹2,201"
+    tiffin: { name: "Marwar Kitchen Co.", price: "₹3,200/mo", note: "Doorstep high protein lunch & dinner dabba" }
   },
   {
     id: "pimr",
@@ -111,11 +86,7 @@ const COLLEGE_PRESETS = [
     area: "Vijay Nagar / Scheme 54",
     dist: "300m from C21 Mall",
     room: { name: "Urban Haven Coliving", price: "₹9,500/mo", note: "Designer shared suite behind Malhar Mega Mall" },
-    tiffin: { name: "Swad Mandir Kitchen", price: "₹2,900/mo", note: "Traditional brass cookware Gujarati thali" },
-    ride: { name: "Honda Activa 6G", price: "₹4,800/mo", note: "Instant pickup on Scheme 54 main road" },
-    total: "₹17,200",
-    combo: "₹15,499/mo",
-    save: "₹1,701"
+    tiffin: { name: "Swad Mandir Kitchen", price: "₹2,900/mo", note: "Traditional brass cookware Gujarati thali" }
   }
 ]
 
@@ -152,12 +123,6 @@ const HomePage = () => {
     }
     if (q.includes('tiffin') || q.includes('dabba') || q.includes('food') || q.includes('meal') || q.includes('veg')) {
       tokens.push({ type: 'category', label: 'Tiffin Plan', icon: UtensilsCrossed, color: 'bg-emerald/15 text-emerald-light border-emerald/30' })
-    }
-    if (q.includes('scooty') || q.includes('activa') || q.includes('bike') || q.includes('vehicle') || q.includes('car')) {
-      tokens.push({ type: 'category', label: 'Vehicle Ride', icon: Bike, color: 'bg-teal/15 text-teal-light border-teal/30' })
-    }
-    if (q.includes('laptop') || q.includes('macbook') || q.includes('thinkpad') || q.includes('coding') || q.includes('pc')) {
-      tokens.push({ type: 'category', label: 'Study Laptop', icon: Laptop, color: 'bg-blue-400/15 text-blue-300 border-blue-400/30' })
     }
 
     // Locality
@@ -241,7 +206,7 @@ const HomePage = () => {
               <span className="w-2 h-2 rounded-full bg-saffron animate-pulse" />
               <span className="text-saffron-light font-semibold">Indore's AI Moving Companion</span>
               <span className="text-white/40">•</span>
-              <span className="text-sandstone-light/80">Rooms · Tiffin · Rides · Laptops</span>
+              <span className="text-sandstone-light/80">Rooms · Tiffin</span>
             </motion.div>
 
             {/* Serif Headline with word-by-word reveal */}
@@ -261,7 +226,7 @@ const HomePage = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-base sm:text-lg text-sandstone-light/80 max-w-2xl mx-auto font-normal leading-relaxed"
             >
-              One prompt to discover your student PG near DAVV, pure veg dabba, Activa scooter, and coding workstation—with zero brokerage and verified local hosts.
+              One prompt to discover your student PG near DAVV and a homestyle veg dabba—with zero brokerage and verified local hosts.
             </motion.p>
 
             {/* Natural-Language Prompt Box */}
@@ -378,7 +343,7 @@ const HomePage = () => {
               <div>
                 <span className="text-xs font-bold uppercase tracking-widest text-teal">Interactive Sathi Preview</span>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-espresso mt-0.5">
-                  Watch Sathi plan a student move in 3 seconds
+                  Watch Sathi read a student move in 3 seconds
                 </h2>
               </div>
               <Link
@@ -400,7 +365,7 @@ const HomePage = () => {
                     <span>User prompt analyzed</span>
                   </div>
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/10 font-sans text-sm text-sandstone-light italic">
-                    "Moving to DAVV Khandwa Road, budget under ₹15,000. Need single room + pure veg tiffin + Activa for daily commute."
+                    "Moving to DAVV Khandwa Road, budget under ₹12,000. Need single room + pure veg tiffin, no brokerage."
                   </div>
 
                   <div className="space-y-2.5 pt-2">
@@ -416,10 +381,6 @@ const HomePage = () => {
                         <CheckCircle2 className="w-4 h-4 text-emerald" />
                         <span>Tiffin delivery kitchen in same Bhawarkuan lane</span>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-emerald" />
-                        <span>Activa 6G pickup hub adjacent to BRTS corridor</span>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -430,73 +391,48 @@ const HomePage = () => {
                 </div>
               </div>
 
-              {/* Matched Bundle Result Column */}
+              {/* Parsed Intent Result Column */}
               <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-serif font-bold text-lg text-espresso">
-                      DAVV Khandwa Rd Starter Combo
+                      Sathi understood it instantly
                     </span>
                     <span className="px-3 py-1 rounded-full bg-emerald/10 text-emerald font-bold text-xs">
-                      Save ₹1,400/mo
+                      Intent confirmed
                     </span>
                   </div>
 
-                  {/* 3 Matched Component Cards */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 rounded-2xl bg-sandstone/60 border border-sandstone-border">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 rounded-xl bg-saffron/15 text-saffron flex items-center justify-center font-bold">
-                          <Home className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-xs text-espresso">Serene Nest Student PG</p>
-                          <p className="text-[11px] text-espresso-light">Single room with study desk & WiFi</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-xs text-espresso">₹7,500/mo</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-3 rounded-2xl bg-sandstone/60 border border-sandstone-border">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 rounded-xl bg-emerald/15 text-emerald flex items-center justify-center font-bold">
-                          <UtensilsCrossed className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-xs text-espresso">Annapurna Ghar Se Tiffin</p>
-                          <p className="text-[11px] text-espresso-light">Pure Veg lunch & dinner + Sunday feast</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-xs text-espresso">₹2,600/mo</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-3 rounded-2xl bg-sandstone/60 border border-sandstone-border">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-9 h-9 rounded-xl bg-teal/15 text-teal flex items-center justify-center font-bold">
-                          <Bike className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-xs text-espresso">Honda Activa 6G Scooter</p>
-                          <p className="text-[11px] text-espresso-light">Monthly student plan with 2 helmets</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-xs text-espresso">₹4,800/mo</span>
-                    </div>
+                  {/* Parsed filter chips */}
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      "Compact single room",
+                      "WiFi included",
+                      "Pure veg tiffin (veg dabba)",
+                      "Budget ≤ ₹12,000/mo combined",
+                      "Bhawarkuan, Khandwa Rd"
+                    ].map((chip, idx) => (
+                      <span key={idx} className="px-3 py-1.5 rounded-full bg-sandstone/60 border border-sandstone-border text-xs text-espresso-muted font-medium flex items-center space-x-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-emerald flex-shrink-0" />
+                        <span>{chip}</span>
+                      </span>
+                    ))}
                   </div>
+
+                  <p className="text-xs text-espresso-light leading-relaxed mt-4">
+                    One sentence is all it takes — Sathi maps your words to real rooms and tiffin services nearby, then takes you straight to the listings that match.
+                  </p>
                 </div>
 
-                {/* Total and CTA */}
+                {/* CTA */}
                 <div className="pt-4 border-t border-sandstone-border flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div>
-                    <span className="text-[11px] text-espresso-light line-through mr-2">Total: ₹14,900</span>
-                    <span className="font-serif font-bold text-xl text-espresso">Combo: ₹13,500/mo</span>
-                  </div>
+                  <span className="text-[11px] text-espresso-light">Parsed in under 3 seconds</span>
 
                   <Link
                     to="/ai"
                     className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-midnight hover:bg-midnight-light text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-1.5"
                   >
-                    <span>Customize This Bundle</span>
+                    <span>Try Sathi Yourself</span>
                     <ArrowRight className="w-3.5 h-3.5 text-saffron" />
                   </Link>
                 </div>
@@ -512,10 +448,10 @@ const HomePage = () => {
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="text-xs font-bold uppercase tracking-widest text-terracotta">Synchronized Relocation</span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-espresso">
-              One sentence. Four essential needs.
+              One sentence. Two essential needs.
             </h2>
             <p className="text-sm text-espresso-light leading-relaxed">
-              No more searching 4 different classified websites or dealing with shady brokers across the city.
+              No more searching classified websites or dealing with shady brokers across the city.
             </p>
           </div>
 
@@ -528,8 +464,8 @@ const HomePage = () => {
               </p>
             </div>
 
-            {/* 4 Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 2 Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
               {/* Card 1 */}
               <div className="p-4 rounded-2xl bg-sandstone/40 border border-sandstone-border hover:border-saffron transition space-y-3">
                 <div className="flex items-center justify-between">
@@ -565,51 +501,15 @@ const HomePage = () => {
                 </div>
                 <div className="font-serif font-bold text-sm text-espresso">₹2,900/mo</div>
               </div>
-
-              {/* Card 3 */}
-              <div className="p-4 rounded-2xl bg-sandstone/40 border border-sandstone-border hover:border-saffron transition space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="w-8 h-8 rounded-lg bg-teal/15 text-teal flex items-center justify-center font-bold text-xs">
-                    <Bike className="w-4 h-4" />
-                  </span>
-                  <span className="text-[11px] font-bold text-teal">Daily Commute</span>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-espresso">Honda Activa 6G</h4>
-                  <p className="text-xs text-espresso-light">Vijay Nagar Hub</p>
-                </div>
-                <div className="text-xs text-espresso-light leading-relaxed border-t border-sandstone-border/60 pt-2">
-                  55 kmpl fuel efficiency with helmet & mobile charger included.
-                </div>
-                <div className="font-serif font-bold text-sm text-espresso">₹4,800/mo</div>
-              </div>
-
-              {/* Card 4 */}
-              <div className="p-4 rounded-2xl bg-sandstone/40 border border-sandstone-border hover:border-saffron transition space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-600 flex items-center justify-center font-bold text-xs">
-                    <Laptop className="w-4 h-4" />
-                  </span>
-                  <span className="text-[11px] font-bold text-blue-600">Dev Ready</span>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-espresso">ThinkPad X1 Carbon</h4>
-                  <p className="text-xs text-espresso-light">Scheme 78 Labs</p>
-                </div>
-                <div className="text-xs text-espresso-light leading-relaxed border-t border-sandstone-border/60 pt-2">
-                  Intel i7, 16GB RAM, pre-configured with VS Code & Docker.
-                </div>
-                <div className="font-serif font-bold text-sm text-espresso">₹5,400/mo</div>
-              </div>
             </div>
 
             {/* Price Total & CTA */}
             <div className="p-6 rounded-2xl bg-midnight text-white flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <span className="text-xs text-sandstone-light/60">Individual Separate Sum: ₹22,600/mo</span>
+                <span className="text-xs text-sandstone-light/60">One direct, zero-brokerage address for both needs</span>
                 <div className="flex items-baseline space-x-3">
-                  <span className="font-serif font-bold text-2xl text-saffron">Sathi Combo: ₹20,500/mo</span>
-                  <span className="text-xs text-emerald-light font-bold bg-emerald/20 px-2 py-0.5 rounded-full">Save ₹2,100</span>
+                  <span className="font-serif font-bold text-2xl text-saffron">Total: ₹12,400/mo</span>
+                  <span className="text-xs text-emerald-light font-bold bg-emerald/20 px-2 py-0.5 rounded-full">Both from verified owners</span>
                 </div>
               </div>
 
@@ -617,7 +517,7 @@ const HomePage = () => {
                 to="/ai"
                 className="w-full sm:w-auto px-6 py-3 rounded-xl bg-saffron hover:bg-saffron-light text-midnight font-bold text-sm shadow-md transition flex items-center justify-center space-x-2"
               >
-                <span>Build Your Bundle</span>
+                <span>Find Your Match with Sathi</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -625,17 +525,17 @@ const HomePage = () => {
         </section>
 
         {/* ==============================================================
-            SECTION 4: STUDENT STARTER PACK (COLLEGE TABS)
+            SECTION 4: VERIFIED PICKS NEAR CAMPUS (COLLEGE TABS)
         ============================================================== */}
         <section className="bg-sandstone-light py-20 px-4 sm:px-6 lg:px-8 border-y border-sandstone-border">
           <div className="max-w-7xl mx-auto space-y-10">
             <div className="text-center max-w-2xl mx-auto space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-saffron-dark">Campus Starter Packs</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-saffron-dark">Campus Picks</span>
               <h2 className="font-serif text-3xl font-bold text-espresso">
-                Indore College Starter Packs
+                Verified Picks Near Your Indore Campus
               </h2>
               <p className="text-sm text-espresso-light">
-                Tailored accommodation, meal plans and transit options synchronized for your university campus.
+                Hand-picked room and meal options synchronized for your university campus.
               </p>
             </div>
 
@@ -661,7 +561,7 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-sandstone-border pb-4">
                 <div>
                   <h3 className="font-serif text-2xl font-bold text-espresso">
-                    {activeCollegePreset.name} Pack
+                    {activeCollegePreset.name} Picks
                   </h3>
                   <div className="flex items-center space-x-2 text-xs text-espresso-light mt-0.5">
                     <MapPin className="w-3.5 h-3.5 text-saffron" />
@@ -672,14 +572,14 @@ const HomePage = () => {
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs text-espresso-light line-through mr-2">{activeCollegePreset.total}</span>
-                  <span className="font-serif font-bold text-xl text-espresso">{activeCollegePreset.combo}</span>
-                  <p className="text-[11px] text-emerald font-semibold">Save {activeCollegePreset.save}/month with Sathi</p>
+                  <span className="text-xs text-espresso-light block">Room {activeCollegePreset.room.price}</span>
+                  <span className="font-serif font-bold text-xl text-espresso">{activeCollegePreset.tiffin.price === "Included" ? "Meals included in rent" : `Food ${activeCollegePreset.tiffin.price}`}</span>
+                  <p className="text-[11px] text-emerald font-semibold">Both from zero-brokerage owners</p>
                 </div>
               </div>
 
-              {/* 3 Pack Items */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* 2 Pack Items */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-2xl bg-sandstone/50 border border-sandstone-border space-y-2">
                   <div className="flex items-center justify-between text-xs font-bold text-espresso">
                     <span className="flex items-center space-x-1.5">
@@ -703,26 +603,14 @@ const HomePage = () => {
                   <h4 className="font-bold text-xs text-espresso">{activeCollegePreset.tiffin.name}</h4>
                   <p className="text-[11px] text-espresso-light leading-relaxed">{activeCollegePreset.tiffin.note}</p>
                 </div>
-
-                <div className="p-4 rounded-2xl bg-sandstone/50 border border-sandstone-border space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold text-espresso">
-                    <span className="flex items-center space-x-1.5">
-                      <Bike className="w-3.5 h-3.5 text-teal" />
-                      <span>Commute / Tech</span>
-                    </span>
-                    <span className="text-teal font-semibold">{activeCollegePreset.ride.price}</span>
-                  </div>
-                  <h4 className="font-bold text-xs text-espresso">{activeCollegePreset.ride.name}</h4>
-                  <p className="text-[11px] text-espresso-light leading-relaxed">{activeCollegePreset.ride.note}</p>
-                </div>
               </div>
 
               <div className="pt-2 flex justify-end">
                 <Link
-                  to={`/ai?college=${activeCollegePreset.id}`}
+                  to="/rooms"
                   className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-xl bg-midnight hover:bg-midnight-light text-white font-bold text-xs transition"
                 >
-                  <span>Request This Campus Pack</span>
+                  <span>Explore Rooms Near Campus</span>
                   <ArrowRight className="w-3.5 h-3.5 text-saffron" />
                 </Link>
               </div>
@@ -767,7 +655,7 @@ const HomePage = () => {
                 Match & Sync
               </h3>
               <p className="text-xs text-espresso-light leading-relaxed">
-                Synchronizes locations along Indore's BRTS corridor and college routes so your room, food delivery lane, and vehicle pick-up point are geographically coherent.
+                Synchronizes locations along Indore's BRTS corridor and college routes so your room and food delivery lane are geographically coherent.
               </p>
             </div>
 
@@ -876,7 +764,7 @@ const HomePage = () => {
                   <div>
                     <h4 className="font-bold text-sm text-espresso">Aadhaar-Verified Hosts</h4>
                     <p className="text-xs text-espresso-light leading-relaxed">
-                      Every PG owner, dabba kitchen, and vehicle owner is verified with government ID and physical location confirmation.
+                      Every PG owner and dabba kitchen is verified with government ID and physical location confirmation.
                     </p>
                   </div>
                 </div>
@@ -975,7 +863,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Link
               to="/rooms"
               className="p-6 rounded-3xl bg-white border border-sandstone-border hover:border-saffron hover:shadow-md transition group space-y-4"
@@ -1006,40 +894,6 @@ const HomePage = () => {
               </div>
               <span className="inline-flex items-center space-x-1 text-xs font-bold text-emerald">
                 <span>View Tiffins</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </span>
-            </Link>
-
-            <Link
-              to="/vehicles"
-              className="p-6 rounded-3xl bg-white border border-sandstone-border hover:border-teal hover:shadow-md transition group space-y-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-teal/15 text-teal flex items-center justify-center font-bold">
-                <Bike className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg text-espresso group-hover:text-teal transition">Rental Vehicles</h3>
-                <p className="text-xs text-espresso-light mt-1">Honda Activa scooters, Classic 350 cruisers & self-drive cars</p>
-              </div>
-              <span className="inline-flex items-center space-x-1 text-xs font-bold text-teal">
-                <span>View Rides</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
-              </span>
-            </Link>
-
-            <Link
-              to="/laptops"
-              className="p-6 rounded-3xl bg-white border border-sandstone-border hover:border-blue-500 hover:shadow-md transition group space-y-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-600 flex items-center justify-center font-bold">
-                <Laptop className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-lg text-espresso group-hover:text-blue-600 transition">Work Laptops</h3>
-                <p className="text-xs text-espresso-light mt-1">ThinkPads for coding, MacBooks for design, ROG gaming rigs</p>
-              </div>
-              <span className="inline-flex items-center space-x-1 text-xs font-bold text-blue-600">
-                <span>View Laptops</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
               </span>
             </Link>

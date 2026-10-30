@@ -6,7 +6,7 @@ export const translations = {
     appName: 'RoomTiffin',
     sathiName: 'Sathi',
     tagline: 'Tell Sathi what you need. Indore does the rest.',
-    sathiSubtitle: 'AI-first local companion for rooms, homestyle tiffins, rental rides & work laptops.',
+    sathiSubtitle: 'AI-first local companion for rooms and homestyle tiffins.',
     searchPlaceholder: 'Tell Sathi: e.g. "single room with WiFi near Vijay Nagar under 8000"...',
     aiThinking: 'Sathi is analyzing Indore listings...',
     quickPromptTitle: 'Popular Indore prompts:',
@@ -16,8 +16,6 @@ export const translations = {
       sathiAi: 'Sathi AI',
       rooms: 'Rooms & PGs',
       tiffin: 'Tiffin & Dabba',
-      vehicles: 'Rides',
-      laptops: 'Laptops',
       saved: 'Saved',
       requests: 'Requests',
       refer: 'Refer & Earn',
@@ -39,18 +37,6 @@ export const translations = {
         subtitle: 'Authentic Malwa, Gujarati & Jain homestyle meal subscriptions delivered fresh daily.',
         action: 'Book Sample Meal Trial',
         perUnit: 'meal'
-      },
-      vehicles: {
-        title: 'Rental Rides in Indore',
-        subtitle: 'Automatic scooty, commuter bikes & self-drive cars with helmet & zero cancellation fees.',
-        action: 'Request Vehicle Booking',
-        perUnit: 'day'
-      },
-      laptops: {
-        title: 'Workstations & Laptops in Indore',
-        subtitle: 'ThinkPads, MacBook Airs & gaming rigs with hardware diagnostics & doorstep delivery.',
-        action: 'Request Device Dispatch',
-        perUnit: 'week'
       }
     },
     guestLock: {
@@ -60,8 +46,7 @@ export const translations = {
     prompts: [
       'single room with WiFi near Vijay Nagar under 8000',
       'pure veg tiffin near Bhawarkuan for coaching',
-      'automatic scooty for a week near Palasia',
-      'laptop for coding near IIT Indore under 300 a day'
+      'verified PG near Palasia with attached bathroom'
     ]
   },
   hi: {
@@ -69,7 +54,7 @@ export const translations = {
     appName: 'रूमटिफिन',
     sathiName: 'साथी',
     tagline: 'साथी को बताएं अपनी ज़रूरत. बाकी इंदौर करेगा.',
-    sathiSubtitle: 'कमरे, घर का टिफिन, रेंटल स्कूटी और लैपटॉप के लिए आपका स्थानीय AI साथी.',
+    sathiSubtitle: 'कमरे और घर के टिफिन के लिए आपका स्थानीय AI साथी.',
     searchPlaceholder: 'साथी से कहें: जैसे "विजय नगर के पास 8000 में वाईफाई वाला रूम"...',
     aiThinking: 'साथी इंदौर के विकल्पों की जांच कर रहा है...',
     quickPromptTitle: 'इंदौर के लोकप्रिय सवाल:',
@@ -79,8 +64,6 @@ export const translations = {
       sathiAi: 'साथी AI',
       rooms: 'कमरे और पीजी',
       tiffin: 'टिफिन सेवा',
-      vehicles: 'वाहन किराया',
-      laptops: 'लैपटॉप रेंट',
       saved: 'सहेजे गए',
       requests: 'अनुरोध',
       refer: 'रेफर और कमाएं',
@@ -102,18 +85,6 @@ export const translations = {
         subtitle: 'शुद्ध शाकाहारी, मालवी और जैन घर का बना खाना, रोजाना डिलीवरी.',
         action: 'सैंपल थाली मंगाएं',
         perUnit: 'थाली'
-      },
-      vehicles: {
-        title: 'इंदौर में रेंटल गाड़ियां',
-        subtitle: 'ऑटोमैटिक एक्टिवा, बाइक और कार, हेलमेट सहित आसान बुकिंग.',
-        action: 'गाड़ी बुक करें',
-        perUnit: 'दिन'
-      },
-      laptops: {
-        title: 'इंदौर में लैपटॉप रेंट पर',
-        subtitle: 'कोडिंग और पढ़ाई के लिए थिंकपैड व मैकबुक, घर तक डिलीवरी.',
-        action: 'लैपटॉप ऑर्डर करें',
-        perUnit: 'हफ्ता'
       }
     },
     guestLock: {
@@ -123,8 +94,7 @@ export const translations = {
     prompts: [
       'विजय नगर के पास 8000 में वाईफाई वाला कमरा',
       'भंवरकुआं कोचिंग के पास शुद्ध शाकाहारी टिफिन',
-      'पलासिया के पास एक हफ्ते के लिए एक्टिवा स्कूटी',
-      'आईआईटी इंदौर के पास कोडिंग के लिए लैपटॉप 300 प्रतिदिन'
+      'पलासिया के पास अटैच्ड बाथरूम वाला सत्यापित पीजी'
     ]
   }
 }

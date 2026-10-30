@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { openLoginModal } from '../../../redux/features/ui/uiSlice.js'
+import { listingMainImage } from '../../../utils/listingImages.js'
 import {
   Star,
   MapPin,
@@ -45,9 +46,7 @@ const TiffinCard = ({ listing, onSelect }) => {
     'Sun: Special Dal Baati Feast'
   ]
 
-  const mainImage = listing.images && listing.images[0]
-    ? listing.images[0]
-    : 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'
+  const mainImage = listingMainImage(listing, 'tiffins')
 
   return (
     <article

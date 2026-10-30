@@ -8,7 +8,7 @@ import {
   getMe,
   contactProvider,
   createBooking,
-  createRentalRequest,
+  getMyBookings,
   getReferralMe,
   getReferralHistory,
   applyReferralCode,
@@ -21,7 +21,7 @@ import {
   getAreaBySlug,
   getColleges
 } from "../controllers/marketplaceController.js"
-import { parseNaturalLanguageQuery, recommendBundle } from "../controllers/ai/aiController.js"
+import { parseNaturalLanguageQuery } from "../controllers/ai/aiController.js"
 import { aiRateLimiter } from "../middleware/rateLimitMiddleware.js"
 
 const router = express.Router()
@@ -35,14 +35,13 @@ router.get("/areas", getAreas)
 router.get("/areas/:slug", getAreaBySlug)
 router.get("/colleges", getColleges)
 
-// AI Natural Language Query Parser & Bundle Recommender (Rate Limited)
+// AI Natural Language Query Parser (Rate Limited)
 router.post("/ai/parse", aiRateLimiter, parseNaturalLanguageQuery)
-router.post("/ai/recommend", aiRateLimiter, recommendBundle)
 
 // Interaction & Protection Actions
 router.post("/contact", contactProvider)
 router.post("/bookings", createBooking)
-router.post("/rental-requests", createRentalRequest)
+router.get("/bookings/my", getMyBookings)
 
 // Referral Program Routes
 router.get("/referrals/me", getReferralMe)

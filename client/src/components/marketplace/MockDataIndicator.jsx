@@ -55,7 +55,7 @@ const MockDataIndicator = () => {
                 <span>Mocked Listings</span>
               </div>
               <p className="text-[11px]">
-                Rooms, Tiffin dabbas, Activas/Classic 350s, and MacBooks/ThinkPads are pre-populated on load.
+                Rooms and Tiffin dabbas are pre-populated on load.
               </p>
             </div>
 

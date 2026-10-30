@@ -5,8 +5,6 @@ import { setActiveCategory } from '../../redux/features/ui/uiSlice.js'
 import {
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   Sparkles
 } from 'lucide-react'
 
@@ -26,22 +24,6 @@ const categories = [
     icon: UtensilsCrossed,
     badge: 'Clean Kitchens',
     accent: 'mustard'
-  },
-  {
-    id: 'vehicles',
-    label: 'Vehicles',
-    subtitle: 'Scooters, bikes & cars',
-    icon: Bike,
-    badge: 'Self-Drive',
-    accent: 'emerald'
-  },
-  {
-    id: 'laptops',
-    label: 'Laptops',
-    subtitle: 'MacBooks, ThinkPads & rigs',
-    icon: Laptop,
-    badge: 'Work & Study',
-    accent: 'slate'
   }
 ]
 
@@ -52,7 +34,7 @@ const CategorySwitcher = () => {
 
   return (
     <div className="w-full" data-testid="category-switcher">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 relative">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 relative">
         {categories.map((cat) => {
           const Icon = cat.icon
           const isActive = activeCategory === cat.id
@@ -75,11 +57,7 @@ const CategorySwitcher = () => {
                   className={`absolute inset-0 z-0 rounded-2xl ${
                     cat.id === 'rooms'
                       ? 'bg-gradient-to-br from-terracotta/10 via-white to-terracotta-light border-2 border-terracotta'
-                      : cat.id === 'tiffin'
-                      ? 'bg-gradient-to-br from-mustard/15 via-white to-mustard-light border-2 border-mustard'
-                      : cat.id === 'vehicles'
-                      ? 'bg-gradient-to-br from-emerald/10 via-white to-emerald-light border-2 border-emerald'
-                      : 'bg-gradient-to-br from-slate-200/50 via-white to-slate-100 border-2 border-slate-700'
+                      : 'bg-gradient-to-br from-mustard/15 via-white to-mustard-light border-2 border-mustard'
                   }`}
                   transition={
                     shouldReduceMotion
@@ -97,11 +75,7 @@ const CategorySwitcher = () => {
                       isActive
                         ? cat.id === 'rooms'
                           ? 'bg-terracotta text-white shadow-sm'
-                          : cat.id === 'tiffin'
-                          ? 'bg-mustard text-white shadow-sm'
-                          : cat.id === 'vehicles'
-                          ? 'bg-emerald text-white shadow-sm'
-                          : 'bg-slate-800 text-white shadow-sm'
+                          : 'bg-mustard text-white shadow-sm'
                         : 'bg-sandstone-dark text-espresso-muted group-hover:text-espresso'
                     }`}
                   >
@@ -113,11 +87,7 @@ const CategorySwitcher = () => {
                       isActive
                         ? cat.id === 'rooms'
                           ? 'bg-terracotta-light text-terracotta'
-                          : cat.id === 'tiffin'
-                          ? 'bg-mustard-light text-mustard-dark'
-                          : cat.id === 'vehicles'
-                          ? 'bg-emerald-light text-emerald'
-                          : 'bg-slate-100 text-slate-800'
+                          : 'bg-mustard-light text-mustard-dark'
                         : 'bg-sandstone-dark text-espresso-light'
                     }`}
                   >

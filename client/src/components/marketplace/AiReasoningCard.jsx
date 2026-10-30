@@ -9,9 +9,7 @@ import {
   MapPin,
   Tag,
   Home,
-  UtensilsCrossed,
-  Bike,
-  Laptop
+  UtensilsCrossed
 } from 'lucide-react'
 
 const AiReasoningCard = () => {
@@ -86,9 +84,7 @@ const AiReasoningCard = () => {
               <div className="flex flex-wrap gap-2">
                 {[
                   { id: 'rooms', label: 'Rooms & PGs', icon: Home },
-                  { id: 'tiffin', label: 'Tiffin & Food', icon: UtensilsCrossed },
-                  { id: 'vehicles', label: 'Vehicles', icon: Bike },
-                  { id: 'laptops', label: 'Work Laptops', icon: Laptop }
+                  { id: 'tiffin', label: 'Tiffin & Food', icon: UtensilsCrossed }
                 ].map((c) => {
                   const Icon = c.icon
                   return (

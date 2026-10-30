@@ -10,7 +10,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: 'Verified Hosts & Kitchens',
-    desc: 'Every room host, tiffin kitchen, vehicle fleet, and laptop vendor is physically cross-verified with valid ID proof before listing.'
+    desc: 'Every room host and tiffin kitchen is physically cross-verified with valid ID proof before listing.'
   },
   {
     icon: Lock,
@@ -25,7 +25,7 @@ const features = [
   {
     icon: RotateCcw,
     title: 'Guaranteed Deposit Refunds',
-    desc: 'Security deposits on rooms, laptops, and rental vehicles are securely held and refunded promptly upon vehicle or device return.'
+    desc: 'Security deposits on rooms and tiffin plans are securely held and refunded promptly when the trial or subscription ends.'
   }
 ]
 
@@ -42,7 +42,7 @@ const TrustSafetySection = () => {
             Built with Privacy & Peace of Mind
           </h2>
           <p className="text-xs sm:text-sm text-espresso-muted">
-            We built RoomTiffin Finder because finding a reliable room, home meal, or scooty in Indore shouldn't involve scams or guesswork.
+            We built RoomTiffin Finder because finding a reliable room or home meal in Indore shouldn't involve scams or guesswork.
           </p>
         </div>
 

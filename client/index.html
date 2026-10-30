@@ -4,7 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RoomTiffin Finder • Sathi AI Indore (Rooms, Tiffin, Rides & Tech)</title>
+    <title>RoomTiffin Finder • Sathi AI Indore (Rooms & Tiffin)</title>
+
+    <!-- Apply saved / system theme before paint (prevents flash of wrong theme) -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('rt_theme');
+          if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) { /* storage blocked — stay light */ }
+      })();
+    </script>
 
     <!-- Google Fonts: Fraunces, Plus Jakarta Sans, Noto Sans Devanagari -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

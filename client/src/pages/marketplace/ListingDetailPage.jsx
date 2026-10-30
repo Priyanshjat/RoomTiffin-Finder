@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { useListing, useContactProvider, useCreateBooking, useCreateRentalRequest } from '../../hooks/useListings.js'
+import { useListing, useContactProvider, useCreateBooking } from '../../hooks/useListings.js'
 import { useWallet } from '../../hooks/useReferral.js'
 import { openLoginModal } from '../../redux/features/ui/uiSlice.js'
 import { toast } from 'sonner'
@@ -21,18 +21,14 @@ import {
   Soup,
   Gauge,
   Cpu,
-  Share2,
-  Sparkles
+  Share2
 } from 'lucide-react'
 import ScheduleTourModal from '../../components/rooms/ScheduleTourModal.jsx'
 import OrderTrialModal from '../../components/tiffins/OrderTrialModal.jsx'
-import BookVehicleModal from '../../components/vehicles/BookVehicleModal.jsx'
 
 const actionLabels = {
   rooms: { button: 'Schedule Free Room Tour', title: 'Schedule a Free Room Tour', helper: 'Visit the room or PG in person with the verified host.' },
-  tiffin: { button: 'Order Sample Meal Trial', title: 'Order Sample Tiffin Trial', helper: 'Taste the homestyle cooking before committing to a monthly plan.' },
-  vehicles: { button: 'Request Vehicle Booking', title: 'Request Vehicle Booking', helper: 'Reserve this vehicle with zero advance cancellation fees.' },
-  laptops: { button: 'Request Laptop Rental', title: 'Request Laptop Dispatch', helper: 'Get this device delivered to your doorstep with refundable security deposit.' }
+  tiffin: { button: 'Order Sample Meal Trial', title: 'Order Sample Tiffin Trial', helper: 'Taste the homestyle cooking before committing to a monthly plan.' }
 }
 
 const ListingDetailPage = () => {
@@ -53,7 +49,6 @@ const ListingDetailPage = () => {
   const [applyWalletCredit, setApplyWalletCredit] = useState(false)
 
   const bookingMutation = useCreateBooking()
-  const rentalMutation = useCreateRentalRequest()
 
   if (isLoading) {
     return (
@@ -86,8 +81,8 @@ const ListingDetailPage = () => {
   ]
   const actionConfig = actionLabels[listing.category] || {
     button: 'Submit Request',
-    title: 'Submit Rental Request',
-    helper: 'Contact the owner to initiate this rental.'
+    title: 'Submit Booking Request',
+    helper: 'Contact the owner to initiate this booking.'
   }
 
   const handleActionClick = () => {
@@ -103,27 +98,15 @@ const ListingDetailPage = () => {
     const creditToUse = applyWalletCredit ? maxDeductible : 0
 
     try {
-      if (listing.category === 'rooms' || listing.category === 'tiffin') {
-        await bookingMutation.mutateAsync({
-          listingId: listing._id || listing.id,
-          category: listing.category,
-          date: requestDate || new Date().toISOString().split('T')[0],
-          slot: requestSlot,
-          notes: requestNotes,
-          applyCredit: creditToUse
-        })
-        toast.success(`Success! Your request has been sent to ${listing.provider?.name}.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
-      } else {
-        await rentalMutation.mutateAsync({
-          listingId: listing._id || listing.id,
-          category: listing.category,
-          duration: requestSlot,
-          startDate: requestDate || new Date().toISOString().split('T')[0],
-          deliveryOption: 'Doorstep Delivery',
-          applyCredit: creditToUse
-        })
-        toast.success(`Success! Rental placed. Provider will reach out via WhatsApp.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
-      }
+      await bookingMutation.mutateAsync({
+        listingId: listing._id || listing.id,
+        category: listing.category,
+        date: requestDate || new Date().toISOString().split('T')[0],
+        slot: requestSlot,
+        notes: requestNotes,
+        applyCredit: creditToUse
+      })
+      toast.success(`Success! Your request has been sent to ${listing.provider?.name}.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
       setShowRequestForm(false)
     } catch (err) {
       toast.error('Failed to submit request. Please try again.')
@@ -342,25 +325,6 @@ const ListingDetailPage = () => {
             </div>
           )}
 
-          {/* Sathi Bundle Teaser Box */}
-          <div className="p-4 rounded-2xl bg-midnight text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="space-y-0.5">
-              <div className="inline-flex items-center space-x-1.5 text-xs text-saffron font-bold">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Bundle with Sathi</span>
-              </div>
-              <p className="text-xs text-sandstone-light/80">
-                Pair this {listing.category === 'rooms' ? 'room with a hot tiffin dabba & Activa ride' : 'listing with other Indore essentials'} to save up to 10%!
-              </p>
-            </div>
-            <Link
-              to="/ai"
-              className="px-4 py-2 rounded-xl bg-saffron hover:bg-saffron-light text-midnight font-bold text-xs shrink-0 transition"
-            >
-              Build Sathi Bundle
-            </Link>
-          </div>
-
           {/* Bottom Action Strip */}
           <div className="p-5 bg-sandstone rounded-2xl border border-sandstone-border flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
@@ -401,14 +365,6 @@ const ListingDetailPage = () => {
         {listing.category === 'tiffin' && showRequestForm && (
           <OrderTrialModal
             tiffin={listing}
-            onClose={() => setShowRequestForm(false)}
-          />
-        )}
-
-        {/* Book Vehicle Modal for Vehicles */}
-        {listing.category === 'vehicles' && showRequestForm && (
-          <BookVehicleModal
-            vehicle={listing}
             onClose={() => setShowRequestForm(false)}
           />
         )}

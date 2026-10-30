@@ -5,8 +5,6 @@ import { openReferralModal } from '../../redux/features/ui/uiSlice.js'
 import {
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   Gift,
   ShieldCheck,
   Heart,
@@ -33,7 +31,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-xs text-sandstone-light/70 leading-relaxed">
-              Indore's trusted AI marketplace for student PGs, homestyle dabbas, rental scooters, and study laptops. 100% verified hosts, zero brokerage.
+              Indore's trusted AI marketplace for student PGs and homestyle dabbas. 100% verified hosts, zero brokerage.
             </p>
             <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-saffron font-medium">
               <Sparkles className="w-3.5 h-3.5" />
@@ -60,21 +58,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/vehicles" className="hover:text-saffron transition flex items-center space-x-1.5">
-                  <Bike className="w-3.5 h-3.5 text-teal" />
-                  <span>Rental Scooters & Bikes</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/laptops" className="hover:text-saffron transition flex items-center space-x-1.5">
-                  <Laptop className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Work & Study Laptops</span>
-                </Link>
-              </li>
-              <li>
                 <Link to="/ai" className="hover:text-saffron transition flex items-center space-x-1.5 text-saffron-light font-semibold">
                   <Sparkles className="w-3.5 h-3.5 text-saffron" />
-                  <span>Sathi Bundle Planner</span>
+                  <span>Sathi AI Search</span>
                 </Link>
               </li>
             </ul>

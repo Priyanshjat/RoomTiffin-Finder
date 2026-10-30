@@ -60,3 +60,124 @@
 .transition-smooth {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ==========================================================================
+   DARK THEME LAYER
+   The app's design tokens are Tailwind utility classes baked into components.
+   Instead of re-styling every component, dark mode re-skins the *surface* and
+   *text* token utilities in one place. Accent colors (saffron, teal, emerald,
+   terracotta, mustard) keep their identity — only their soft "light" chip
+   backgrounds become translucent. Deliberately dark surfaces (bg-midnight*,
+   bg-espresso, bg-white/5..20 glass overlays on heroes) are left untouched.
+   Enabled by the `dark` class on <html>; default follows the system.
+   ========================================================================== */
+
+:root { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+body {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---- Page & section surfaces ---- */
+html.dark body { background-color: #0B0F16; color: #E6EAF2; }
+html.dark .bg-sandstone { background-color: #0B0F16; }           /* page bg */
+html.dark .bg-sandstone-light { background-color: #11151F; }    /* alt sections */
+html.dark .bg-sandstone-dark { background-color: #1C2230; }     /* chips / inputs */
+html.dark .bg-sandstone\/60 { background-color: rgba(38, 46, 61, 0.6); }
+html.dark .bg-sandstone\/50 { background-color: rgba(38, 46, 61, 0.5); }
+html.dark .bg-sandstone\/40 { background-color: rgba(38, 46, 61, 0.4); }
+html.dark .bg-sandstone\/30 { background-color: rgba(38, 46, 61, 0.3); }
+html.dark .bg-slate-50 { background-color: #131824; }
+
+/* ---- Cards ---- */
+html.dark .bg-white { background-color: #151B26; }
+html.dark .bg-white\/95 { background-color: rgba(21, 27, 38, 0.95); }
+html.dark .bg-white\/90 { background-color: rgba(21, 27, 38, 0.9); }
+
+/* ---- Text ---- */
+html.dark .text-espresso { color: #E6EAF2; }
+html.dark .text-espresso-muted { color: #9BA5B7; }
+html.dark .text-espresso-light { color: #7C879C; }
+/* Keep dark text on light-gold badges even in dark mode (contrast) */
+html.dark .bg-mustard.text-espresso { color: #2B2118; }
+
+/* ---- Borders & dividers ---- */
+html.dark .border-sandstone-border { border-color: #262E3D; }
+html.dark .border-sandstone-border\/30 { border-color: rgba(38, 46, 61, 0.3); }
+html.dark .border-sandstone-border\/40 { border-color: rgba(38, 46, 61, 0.4); }
+html.dark .border-sandstone-border\/60 { border-color: rgba(38, 46, 61, 0.6); }
+html.dark .border-sandstone-border\/70 { border-color: rgba(38, 46, 61, 0.7); }
+html.dark .border-sandstone-border\/80 { border-color: rgba(38, 46, 61, 0.8); }
+html.dark .border-gray-100 { border-color: rgba(38, 46, 61, 0.6); }
+html.dark .border-gray-200 { border-color: #262E3D; }
+html.dark .border-gray-300 { border-color: #2A3242; }
+html.dark .border-slate-300 { border-color: #2A3242; }
+html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: rgba(38, 46, 61, 0.6); }
+html.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #262E3D; }
+html.dark .divide-sandstone-border > :not([hidden]) ~ :not([hidden]) { border-color: #262E3D; }
+
+/* ---- Gray scale used by provider / admin dashboards ---- */
+html.dark .bg-gray-50 { background-color: #131824; }
+html.dark .bg-gray-100 { background-color: #1A2030; }
+html.dark .bg-gray-200 { background-color: #232B3A; }
+html.dark .text-gray-900 { color: #E6EAF2; }
+html.dark .text-gray-800 { color: #DDE3EE; }
+html.dark .text-gray-700 { color: #C4CBDA; }
+html.dark .text-gray-600 { color: #9BA5B7; }
+html.dark .text-gray-500 { color: #9BA5B7; }
+html.dark .text-gray-400 { color: #6C7688; }
+html.dark .text-gray-300 { color: #6C7688; }
+
+/* ---- Hover states (Tailwind emits them as separate utilities) ---- */
+html.dark .hover\:bg-gray-50:hover { background-color: #131824; }
+html.dark .hover\:bg-gray-100:hover { background-color: #1A2030; }
+html.dark .hover\:bg-gray-200:hover { background-color: #232B3A; }
+html.dark .hover\:bg-sandstone:hover { background-color: #11151F; }
+html.dark .hover\:bg-sandstone-light:hover { background-color: #0B0F16; }
+html.dark .hover\:bg-sandstone-dark:hover { background-color: #262E3D; }
+html.dark .hover\:bg-white:hover { background-color: #1B2230; }
+html.dark .hover\:border-gray-300:hover { border-color: #2A3242; }
+html.dark .hover\:border-sandstone:hover { border-color: #2A3242; }
+
+/* ---- Soft status chips: solid pale backgrounds become translucent tints ---- */
+html.dark .bg-emerald-light { background-color: rgba(46, 125, 91, 0.16); }
+html.dark .bg-emerald-light\/40 { background-color: rgba(46, 125, 91, 0.25); }
+html.dark .bg-saffron-light { background-color: rgba(230, 126, 34, 0.12); }
+html.dark .bg-mustard-light { background-color: rgba(217, 155, 38, 0.14); }
+html.dark .bg-terracotta-light { background-color: rgba(200, 90, 50, 0.14); }
+html.dark .bg-teal-light { background-color: rgba(13, 148, 136, 0.15); }
+html.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.15); }
+html.dark .bg-blue-100 { background-color: rgba(59, 130, 246, 0.2); }
+html.dark .bg-green-50 { background-color: rgba(22, 163, 74, 0.15); }
+html.dark .bg-green-100 { background-color: rgba(22, 163, 74, 0.2); }
+html.dark .bg-orange-50 { background-color: rgba(234, 88, 12, 0.15); }
+html.dark .bg-orange-100 { background-color: rgba(234, 88, 12, 0.2); }
+html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.12); }
+html.dark .bg-red-100 { background-color: rgba(239, 68, 68, 0.18); }
+html.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.14); }
+html.dark .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.14); }
+
+/* ---- Arbitrary-hex surfaces (hardcoded light colors in components) ---- */
+html.dark .bg-\[\#FEF7E6\] { background-color: rgba(217, 155, 38, 0.12); } /* mustard notice panels */
+
+/* ---- Flip gradient stops so light bands go dark in gradients ---- */
+/* via-* bakes the hex into --tw-gradient-stops, so override the whole chain */
+html.dark .via-white {
+  --tw-gradient-to: rgba(28, 34, 48, 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), #1C2230 var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+html.dark .via-sandstone {
+  --tw-gradient-to: rgba(28, 34, 48, 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), #1C2230 var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+html.dark .from-mustard-light { --tw-gradient-from: rgba(217, 155, 38, 0.16) var(--tw-gradient-from-position); }
+html.dark .to-mustard-light { --tw-gradient-to: rgba(217, 155, 38, 0.16) var(--tw-gradient-to-position); }
+html.dark .from-terracotta-light { --tw-gradient-from: rgba(200, 90, 50, 0.16) var(--tw-gradient-from-position); }
+html.dark .to-terracotta-light { --tw-gradient-to: rgba(200, 90, 50, 0.16) var(--tw-gradient-to-position); }
+html.dark .from-sandstone-light { --tw-gradient-from: #11151F var(--tw-gradient-from-position); }
+html.dark .to-sandstone-light { --tw-gradient-to: #11151F var(--tw-gradient-to-position); }
+html.dark .from-emerald-light { --tw-gradient-from: rgba(46, 125, 91, 0.18) var(--tw-gradient-from-position); }
+html.dark .to-emerald-light { --tw-gradient-to: rgba(46, 125, 91, 0.18) var(--tw-gradient-to-position); }
+html.dark .from-saffron-light { --tw-gradient-from: rgba(230, 126, 34, 0.14) var(--tw-gradient-from-position); }
+html.dark .to-saffron-light { --tw-gradient-to: rgba(230, 126, 34, 0.14) var(--tw-gradient-to-position); }

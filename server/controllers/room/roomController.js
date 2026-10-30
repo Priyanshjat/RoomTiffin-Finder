@@ -1,6 +1,8 @@
 import Room from "../../models/roomModel.js"
 import { mockRooms } from "../../data/mockData.js"
 import mongoose from "mongoose"
+import { pickUniqueImage } from "../../services/listingImages.js"
+import { getUsedImageKeys } from "../../services/usedImages.js"
 
 // In-memory array for newly created rooms during fallback
 let localRooms = [...mockRooms]
@@ -136,6 +138,11 @@ const createRoom = async (req, res) => {
         throw new Error("Please Fill All Details!")
     }
 
+    // Every new room gets its own photo - never one already used by another listing
+    const roomImages = images && images.length > 0
+        ? images
+        : [pickUniqueImage(await getUsedImageKeys(), "room")]
+
     const roomData = {
         title,
         description,
@@ -147,9 +154,7 @@ const createRoom = async (req, res) => {
         address,
         amenities: Array.isArray(amenities) ? amenities : (amenities ? amenities.split(",") : []),
         preferredTenant: preferredTenant || "ANY",
-        images: images && images.length > 0 ? images : [
-            "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80"
-        ],
+        images: roomImages,
         owner: req.user._id,
         isAvailable: true,
         rating: 4.8,

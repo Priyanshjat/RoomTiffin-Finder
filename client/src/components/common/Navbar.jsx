@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../../redux/features/auth/authSlice.js'
 import {
-  openLoginModal,
   toggleLanguage,
+  toggleTheme,
   setActiveCategory
 } from '../../redux/features/ui/uiSlice.js'
 import { translations } from '../../utils/translations.js'
 import {
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   Sparkles,
   Gift,
   Wallet,
@@ -26,7 +24,9 @@ import {
   ClipboardList,
   MapPin,
   Globe,
-  Briefcase
+  Briefcase,
+  Sun,
+  Moon
 } from 'lucide-react'
 
 const Navbar = () => {
@@ -35,10 +35,12 @@ const Navbar = () => {
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.auth)
-  const { language = 'en' } = useSelector((state) => state.ui)
+  const { language = 'en', theme = 'light' } = useSelector((state) => state.ui)
   const t = translations[language] || translations.en
+  const navigate = useNavigate()
 
-  const isDarkPage = location.pathname === '/' || location.pathname === '/ai'
+  // Navbar gets the midnight look on dark-branded routes OR whenever dark theme is active
+  const isDarkNav = (location.pathname === '/' || location.pathname === '/ai') || theme === 'dark'
 
   const handleLogout = () => {
     dispatch(logout())
@@ -49,7 +51,7 @@ const Navbar = () => {
   return (
     <header
       className={`sticky top-0 z-40 transition-colors duration-300 border-b ${
-        isDarkPage
+        isDarkNav
           ? 'bg-midnight/95 backdrop-blur-md border-midnight-border text-midnight-text'
           : 'bg-sandstone-light/95 backdrop-blur-md border-sandstone-border text-espresso'
       }`}
@@ -82,7 +84,7 @@ const Navbar = () => {
             {/* City Badge: "Indore · more cities soon" */}
             <div
               className={`hidden sm:inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border transition ${
-                isDarkPage
+                isDarkNav
                   ? 'bg-midnight-card border-midnight-border text-midnight-muted'
                   : 'bg-sandstone border-sandstone-border text-espresso-muted'
               }`}
@@ -101,7 +103,7 @@ const Navbar = () => {
                 `px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${
                   isActive
                     ? 'bg-terracotta text-white shadow-xs font-bold'
-                    : isDarkPage
+                    : isDarkNav
                     ? 'text-midnight-muted hover:text-white hover:bg-midnight-card'
                     : 'text-espresso-muted hover:text-espresso hover:bg-sandstone-dark'
                 }`
@@ -118,7 +120,7 @@ const Navbar = () => {
                 `px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${
                   isActive
                     ? 'bg-mustard text-white shadow-xs font-bold'
-                    : isDarkPage
+                    : isDarkNav
                     ? 'text-midnight-muted hover:text-white hover:bg-midnight-card'
                     : 'text-espresso-muted hover:text-espresso hover:bg-sandstone-dark'
                 }`
@@ -127,40 +129,6 @@ const Navbar = () => {
             >
               <UtensilsCrossed className="w-3.5 h-3.5" />
               <span>{t.nav.tiffin}</span>
-            </NavLink>
-
-            <NavLink
-              to="/vehicles"
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${
-                  isActive
-                    ? 'bg-emerald text-white shadow-xs font-bold'
-                    : isDarkPage
-                    ? 'text-midnight-muted hover:text-white hover:bg-midnight-card'
-                    : 'text-espresso-muted hover:text-espresso hover:bg-sandstone-dark'
-                }`
-              }
-              data-testid="nav-link-vehicles"
-            >
-              <Bike className="w-3.5 h-3.5" />
-              <span>{t.nav.vehicles}</span>
-            </NavLink>
-
-            <NavLink
-              to="/laptops"
-              className={({ isActive }) =>
-                `px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition ${
-                  isActive
-                    ? 'bg-slate-700 text-white shadow-xs font-bold'
-                    : isDarkPage
-                    ? 'text-midnight-muted hover:text-white hover:bg-midnight-card'
-                    : 'text-espresso-muted hover:text-espresso hover:bg-sandstone-dark'
-                }`
-              }
-              data-testid="nav-link-laptops"
-            >
-              <Laptop className="w-3.5 h-3.5" />
-              <span>{t.nav.laptops}</span>
             </NavLink>
           </nav>
 
@@ -183,7 +151,7 @@ const Navbar = () => {
               onClick={() => dispatch(toggleLanguage())}
               data-testid="navbar-lang-toggle"
               className={`flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-bold border transition ${
-                isDarkPage
+                isDarkNav
                   ? 'bg-midnight-card border-midnight-border text-midnight-text hover:border-saffron'
                   : 'bg-white border-sandstone-border text-espresso hover:border-saffron'
               }`}
@@ -193,12 +161,27 @@ const Navbar = () => {
               <span className="uppercase text-[11px]">{language === 'en' ? 'हिन्दी' : 'English'}</span>
             </button>
 
+            {/* Theme Toggle Pill (light / dark) */}
+            <button
+              type="button"
+              onClick={() => dispatch(toggleTheme())}
+              data-testid="navbar-theme-toggle"
+              className={`p-2 rounded-full text-xs font-bold border transition ${
+                isDarkNav
+                  ? 'bg-midnight-card border-midnight-border text-midnight-text hover:border-saffron'
+                  : 'bg-white border-sandstone-border text-espresso hover:border-saffron'
+              }`}
+              title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-saffron" /> : <Moon className="w-4 h-4 text-espresso" />}
+            </button>
+
             {/* Refer & Earn link */}
             <Link
               to="/refer"
               data-testid="navbar-refer-btn"
               className={`p-2 rounded-xl transition ${
-                isDarkPage
+                isDarkNav
                   ? 'text-midnight-muted hover:text-saffron hover:bg-midnight-card'
                   : 'text-espresso-muted hover:text-saffron hover:bg-sandstone-dark'
               }`}
@@ -212,7 +195,7 @@ const Navbar = () => {
               to="/saved"
               data-testid="navbar-saved-link"
               className={`p-2 rounded-xl transition ${
-                isDarkPage
+                isDarkNav
                   ? 'text-midnight-muted hover:text-terracotta hover:bg-midnight-card'
                   : 'text-espresso-muted hover:text-terracotta hover:bg-sandstone-dark'
               }`}
@@ -226,7 +209,7 @@ const Navbar = () => {
               to="/apply-provider"
               data-testid="navbar-host-link"
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold border flex items-center space-x-1 transition ${
-                isDarkPage
+                isDarkNav
                   ? 'bg-midnight-card border-midnight-border text-midnight-muted hover:text-white'
                   : 'bg-white border-sandstone-border text-espresso-muted hover:text-espresso'
               }`}
@@ -246,6 +229,18 @@ const Navbar = () => {
                   >
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>Admin</span>
+                  </Link>
+                )}
+
+                {user.userType === 'PROVIDER' && (
+                  <Link
+                    to="/provider"
+                    data-testid="navbar-provider-link"
+                    className="flex items-center space-x-1 px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold hover:bg-blue-100 transition"
+                    title="Your Provider Dashboard"
+                  >
+                    <Briefcase className="w-3.5 h-3.5" />
+                    <span>Provider Hub</span>
                   </Link>
                 )}
 
@@ -270,7 +265,7 @@ const Navbar = () => {
                   onClick={handleLogout}
                   data-testid="navbar-logout-btn"
                   className={`p-2 rounded-lg transition ${
-                    isDarkPage
+                    isDarkNav
                       ? 'text-midnight-muted hover:text-terracotta hover:bg-midnight-card'
                       : 'text-espresso-muted hover:text-terracotta hover:bg-sandstone-dark'
                   }`}
@@ -283,10 +278,10 @@ const Navbar = () => {
               <div className="flex items-center space-x-2" data-testid="navbar-auth-buttons">
                 <button
                   type="button"
-                  onClick={() => dispatch(openLoginModal())}
+                  onClick={() => navigate('/login')}
                   data-testid="navbar-login-btn"
                   className={`px-3 py-2 text-xs font-semibold rounded-xl transition ${
-                    isDarkPage
+                    isDarkNav
                       ? 'text-midnight-muted hover:text-white'
                       : 'text-espresso-muted hover:text-espresso'
                   }`}
@@ -296,7 +291,7 @@ const Navbar = () => {
 
                 <button
                   type="button"
-                  onClick={() => dispatch(openLoginModal())}
+                  onClick={() => navigate('/register')}
                   data-testid="navbar-register-btn"
                   className="px-4 py-2 bg-saffron hover:bg-saffron-hover text-white text-xs font-bold rounded-xl shadow-xs transition"
                 >
@@ -309,6 +304,16 @@ const Navbar = () => {
 
           {/* Mobile menu hamburger */}
           <div className="flex items-center md:hidden space-x-2">
+            <button
+              type="button"
+              onClick={() => dispatch(toggleTheme())}
+              data-testid="mobile-theme-btn"
+              className="p-2 rounded-md border border-sandstone-border transition"
+              title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-saffron" /> : <Moon className="w-4 h-4 text-espresso" />}
+            </button>
+
             <button
               type="button"
               onClick={() => dispatch(toggleLanguage())}
@@ -335,7 +340,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           className={`md:hidden border-t px-4 py-5 space-y-4 ${
-            isDarkPage
+            isDarkNav
               ? 'bg-midnight-card border-midnight-border text-midnight-text'
               : 'bg-sandstone-light border-sandstone-border text-espresso'
           }`}
@@ -358,22 +363,6 @@ const Navbar = () => {
               <UtensilsCrossed className="w-4 h-4 text-mustard" />
               <span>{t.nav.tiffin}</span>
             </Link>
-            <Link
-              to="/vehicles"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-sandstone border border-sandstone-border text-xs font-bold flex items-center space-x-2 text-espresso"
-            >
-              <Bike className="w-4 h-4 text-emerald" />
-              <span>{t.nav.vehicles}</span>
-            </Link>
-            <Link
-              to="/laptops"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 rounded-xl bg-sandstone border border-sandstone-border text-xs font-bold flex items-center space-x-2 text-espresso"
-            >
-              <Laptop className="w-4 h-4 text-slate-700" />
-              <span>{t.nav.laptops}</span>
-            </Link>
           </div>
 
           <Link
@@ -385,6 +374,18 @@ const Navbar = () => {
             <span>Chat with Sathi AI</span>
           </Link>
 
+          {user && user.userType === 'PROVIDER' && (
+            <Link
+              to="/provider"
+              onClick={() => setMobileMenuOpen(false)}
+              data-testid="mobile-nav-provider-link"
+              className="w-full flex items-center justify-center space-x-2 py-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl text-xs font-bold"
+            >
+              <Briefcase className="w-4 h-4" />
+              <span>Provider Hub — My Listings & Requests</span>
+            </Link>
+          )}
+
           <div className="flex items-center justify-between text-xs pt-1 border-t border-sandstone-border/40">
             <Link to="/refer" onClick={() => setMobileMenuOpen(false)} className="font-semibold text-saffron">
               {t.nav.refer} (₹200)
@@ -393,6 +394,17 @@ const Navbar = () => {
               {t.nav.becomeHost}
             </Link>
           </div>
+
+          <button
+            onClick={() => dispatch(toggleTheme())}
+            className="flex items-center justify-between text-xs pt-1 border-t border-sandstone-border/40 w-full text-left"
+          >
+            <span className="font-semibold text-espresso-muted">Appearance</span>
+            <span className="flex items-center space-x-1.5 font-bold text-espresso">
+              {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-saffron" /> : <Moon className="w-3.5 h-3.5" />}
+              <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
+            </span>
+          </button>
 
           {user ? (
             <div className="pt-2 border-t border-sandstone-border/40 flex justify-between items-center text-xs">
@@ -404,7 +416,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => {
-                dispatch(openLoginModal())
+                navigate('/login')
                 setMobileMenuOpen(false)
               }}
               className="w-full py-2.5 bg-saffron text-white rounded-xl text-xs font-bold"

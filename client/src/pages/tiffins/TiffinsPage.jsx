@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSelector, useDispatch } from 'react-redux'
 import { useListings } from '../../hooks/useListings.js'
 import { openLoginModal } from '../../redux/features/ui/uiSlice.js'
+import { fallbackListingImage } from '../../utils/listingImages.js'
 import PageTransition from '../../components/common/PageTransition.jsx'
 import OrderTrialModal from '../../components/tiffins/OrderTrialModal.jsx'
 import {
@@ -55,10 +56,19 @@ const TiffinsPage = () => {
 
   const { data: listingsData = [], isLoading } = useListings({ category: 'tiffin' })
 
-  // Active filters
-  const [selectedDiet, setSelectedDiet] = useState('all') // 'all' | 'pure vegetarian' | 'jain' | 'north indian'
+  // Active filters (initialized from URL params when Sathi hands off a parsed search)
+  const [searchParams] = useSearchParams()
+  const sathiDiet = (searchParams.get('diet') || '').toLowerCase()
+  const sathiArea = searchParams.get('area') || ''
+
+  const [selectedDiet, setSelectedDiet] = useState(() => {
+    if (sathiDiet.includes('jain')) return 'jain'
+    if (sathiDiet.includes('north')) return 'north indian'
+    if (sathiDiet && sathiDiet !== 'all') return 'pure vegetarian'
+    return 'all'
+  }) // 'all' | 'pure vegetarian' | 'jain' | 'north indian'
   const [selectedTiming, setSelectedTiming] = useState('all') // 'all' | 'lunch' | 'dinner' | 'both'
-  const [selectedLocality, setSelectedLocality] = useState('all')
+  const [selectedLocality, setSelectedLocality] = useState(sathiArea || 'all')
   const [activeDayIdx, setActiveDayIdx] = useState(() => new Date().getDay())
 
   // Meal Plan Builder Sidebar State
@@ -321,6 +331,12 @@ const TiffinsPage = () => {
             MAIN CONTENT: TIFFIN LISTINGS GRID
         ========================================================= */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+          {(sathiDiet || sathiArea) && (
+            <div className="p-3.5 rounded-2xl bg-midnight text-white border border-white/10 flex items-center space-x-2 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-saffron" />
+              <span className="font-semibold">Sathi applied your search filters below — the matching tiffin services are shown here.</span>
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-sandstone-border pb-4">
             <div>
               <h2 className="font-serif text-2xl font-bold text-espresso">
@@ -382,7 +398,7 @@ const TiffinsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredTiffins.map((tiffin) => {
                 const images = tiffin.images && tiffin.images.length > 0 ? tiffin.images : [
-                  'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'
+                  fallbackListingImage(tiffin, 'tiffins')
                 ]
                 return (
                   <div
@@ -501,13 +517,13 @@ const TiffinsPage = () => {
             <div className="space-y-1">
               <span className="text-xs font-bold text-saffron uppercase tracking-wider flex items-center space-x-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Synchronized Student Bundle</span>
+                <span>Sathi AI Search</span>
               </span>
               <h3 className="font-serif font-bold text-xl text-white">
-                Pair your Tiffin with Room & Activa Scooter
+                Find a Room near your Tiffin Service
               </h3>
               <p className="text-xs text-sandstone-light/75 max-w-lg leading-relaxed">
-                Tell Sathi your college campus. Sathi synchronizes your room location and meal delivery timing so hot lunch reaches your study desk right on schedule.
+                Tell Sathi your college campus and budget in plain words. Sathi matches you with rooms close to your meal delivery route so hot lunch reaches your study desk right on schedule.
               </p>
             </div>
 
@@ -515,7 +531,7 @@ const TiffinsPage = () => {
               to="/ai"
               className="px-6 py-3 rounded-2xl bg-saffron hover:bg-saffron-light text-midnight font-bold text-xs shadow-md shrink-0 transition flex items-center space-x-1.5"
             >
-              <span>Build Sathi Bundle</span>
+              <span>Try Sathi AI</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

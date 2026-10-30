@@ -185,7 +185,7 @@ class MarketplaceStore {
         userId: "user-seeded-001",
         type: "CREDIT",
         amount: 200,
-        description: "Referral reward from Rohan Verma (First rental completed)",
+        description: "Referral reward from Rohan Verma (First booking completed)",
         createdAt: new Date(Date.now() - 7 * 86400000).toISOString()
       },
       {
@@ -193,16 +193,15 @@ class MarketplaceStore {
         userId: "user-seeded-001",
         type: "DEBIT",
         amount: 50,
-        description: "Discount applied on Honda Activa booking",
+        description: "Discount applied on room tour booking",
         createdAt: new Date(Date.now() - 4 * 86400000).toISOString()
       }
     ]
 
     this.bookings = []
-    this.rentalRequests = []
     this.favorites = [
       { userId: "user-seeded-001", listingId: "room-001" },
-      { userId: "user-seeded-001", listingId: "veh-001" }
+      { userId: "user-seeded-001", listingId: "tiffin-001" }
     ]
   }
 
@@ -268,7 +267,8 @@ class MarketplaceStore {
       name,
       email: email.trim().toLowerCase(),
       phone: phone || "+91 98000 00000",
-      userType: userType === "ADMIN" ? "ADMIN" : "USER",
+      // Always USER for self-registration — the userType param is no longer trusted.
+      userType: "USER",
       referralCode: newRefCode,
       referredBy: validReferrer ? validReferrer.referralCode : null,
       walletBalance: initialWallet,
@@ -341,7 +341,7 @@ class MarketplaceStore {
     return { user: safeUser, token }
   }
 
-  // Check and credit referral completion rewards when user completes first booking/rental
+  // Check and credit referral completion rewards when user completes first booking
   checkAndTriggerReferralCompletion(userId) {
     const user = this.findUserById(userId)
     if (!user) return
@@ -396,7 +396,7 @@ class MarketplaceStore {
         userId: user._id,
         type: "DEBIT",
         amount: creditToDeduct,
-        description: `Wallet credits applied to rental / booking discount`,
+        description: `Wallet credits applied to booking discount`,
         createdAt: new Date().toISOString()
       })
     }

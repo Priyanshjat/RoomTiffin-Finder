@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import mongoose from "mongoose"
 import User from "../../models/userModel.js"
+import { REFERRAL_CONFIG } from "../../config/referralConfig.js"
+import { recordSignupReferral } from "../../services/userContext.js"
 
 // All pre-seeded users matching server/seed.js + RoomTiffin standards
 const localUsers = [
@@ -63,32 +65,6 @@ const localUsers = [
         userType: "PROVIDER",
         referralCode: "ANN003",
         walletBalance: 200,
-        createdAt: new Date().toISOString()
-    },
-    {
-        _id: "user_seed_prov_003",
-        name: "Indore Ride Rentals (Vikram)",
-        email: "indore.bikes@example.com",
-        phone: "9876500004",
-        password: bcrypt.hashSync("Provider@123", 10),
-        rawPassword: "Provider@123",
-        address: "Palasia, Indore",
-        userType: "PROVIDER",
-        referralCode: "BIK004",
-        walletBalance: 150,
-        createdAt: new Date().toISOString()
-    },
-    {
-        _id: "user_seed_prov_004",
-        name: "TechRent Hub (Rajesh Verma)",
-        email: "techrent.devices@example.com",
-        phone: "9876500005",
-        password: bcrypt.hashSync("Provider@123", 10),
-        rawPassword: "Provider@123",
-        address: "Scheme No. 54, Indore",
-        userType: "PROVIDER",
-        referralCode: "TEC005",
-        walletBalance: 150,
         createdAt: new Date().toISOString()
     },
     {
@@ -194,7 +170,7 @@ const generateReferralCode = (name) => {
 
 // POST /api/auth/register or POST /api/auth/signup
 const registerUser = async (req, res) => {
-    const { name, email, phone, password, referralCode, userType } = req.body
+    const { name, email, phone, password, referralCode } = req.body
 
     if (!name || !email || !phone || !password) {
         res.status(409)
@@ -215,13 +191,16 @@ const registerUser = async (req, res) => {
             }
 
             let validReferrerCode = null
+            let referrerDoc = null
             let welcomeBonus = 0
 
             if (referralCode) {
                 const referrer = await User.findOne({ referralCode: referralCode.trim().toUpperCase() })
-                if (referrer) {
+                if (referrer && referrer.email.toLowerCase() !== cleanEmail) {
+                    referrerDoc = referrer
                     validReferrerCode = referrer.referralCode
-                    welcomeBonus = 50
+                    // Unified with the marketplace referral program rewards
+                    welcomeBonus = REFERRAL_CONFIG.FRIEND_WELCOME_CREDIT
                 }
             }
 
@@ -237,10 +216,17 @@ const registerUser = async (req, res) => {
                 referralCode: newReferralCode,
                 referredBy: validReferrerCode,
                 walletBalance: welcomeBonus,
-                userType: userType === "ADMIN" ? "ADMIN" : (userType === "PROVIDER" ? "PROVIDER" : "USER")
+                // Public signup always creates a USER — providers are upgraded
+                // after admin verification, admins are created manually.
+                userType: "USER"
             })
 
             if (user) {
+                // Track the referral + wallet transaction so referrer dashboards show it
+                if (validReferrerCode) {
+                    await recordSignupReferral(user, referrerDoc, validReferrerCode)
+                }
+
                 return res.status(201).json({
                     _id: user._id,
                     name: user.name,
@@ -281,8 +267,8 @@ const registerUser = async (req, res) => {
         rawPassword: password,
         referralCode: newRefCode,
         referredBy: referralCode || null,
-        walletBalance: referralCode ? 50 : 0,
-        userType: userType === "ADMIN" ? "ADMIN" : (userType === "PROVIDER" ? "PROVIDER" : "USER"),
+        walletBalance: referralCode ? REFERRAL_CONFIG.FRIEND_WELCOME_CREDIT : 0,
+        userType: "USER",
         createdAt: new Date().toISOString()
     }
 

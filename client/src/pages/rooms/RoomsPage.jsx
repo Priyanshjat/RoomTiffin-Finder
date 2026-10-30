@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSelector, useDispatch } from 'react-redux'
 import { useListings } from '../../hooks/useListings.js'
@@ -50,13 +50,22 @@ const RoomsPage = () => {
   // Fetch all room listings
   const { data: listingsData = [], isLoading, isError } = useListings({ category: 'rooms' })
 
-  // Filters State
-  const [selectedArea, setSelectedArea] = useState('all')
-  const [maxBudget, setMaxBudget] = useState(15000)
-  const [occupancyFilter, setOccupancyFilter] = useState('all') // 'all' | 'single' | 'shared' | '1rk'
+  // Filters State (initialized from URL params when Sathi hands off a parsed search)
+  const [searchParams] = useSearchParams()
+  const sathiBudget = parseInt(searchParams.get('budget'), 10) || 0
+  const sathiRoomType = (searchParams.get('roomType') || '').toLowerCase()
+  const sathiArea = searchParams.get('area') || ''
+
+  const [selectedArea, setSelectedArea] = useState(sathiArea || 'all')
+  const [maxBudget, setMaxBudget] = useState(
+    sathiBudget > 0 ? Math.min(18000, Math.max(4000, sathiBudget)) : 15000
+  )
+  const [occupancyFilter, setOccupancyFilter] = useState(
+    ['single', 'shared', '1rk'].includes(sathiRoomType) ? sathiRoomType : 'all'
+  ) // 'all' | 'single' | 'shared' | '1rk'
   const [furnishingFilter, setFurnishingFilter] = useState('all') // 'all' | 'furnished' | 'semi'
-  const [requireWifi, setRequireWifi] = useState(false)
-  const [requireAc, setRequireAc] = useState(false)
+  const [requireWifi, setRequireWifi] = useState(searchParams.get('wifi') === '1')
+  const [requireAc, setRequireAc] = useState(searchParams.get('ac') === '1')
   const [requireBath, setRequireBath] = useState(false)
   const [requireFood, setRequireFood] = useState(false)
   const [sortBy, setSortBy] = useState('recommended') // 'recommended' | 'price-asc' | 'price-desc' | 'rating'
@@ -350,6 +359,12 @@ const RoomsPage = () => {
             MAIN CONTENT: STICKY FILTER RAIL + LISTINGS
         ========================================================= */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {(sathiBudget > 0 || sathiArea || sathiRoomType || searchParams.get('wifi') === '1' || searchParams.get('ac') === '1') && (
+            <div className="mb-6 p-3.5 rounded-2xl bg-midnight text-white border border-white/10 flex items-center space-x-2 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-saffron" />
+              <span className="font-semibold">Sathi applied your search filters below — fine-tune or reset anytime.</span>
+            </div>
+          )}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Desktop Sticky Filter Rail */}
             <aside className="hidden lg:block lg:col-span-3 space-y-6">
@@ -455,13 +470,13 @@ const RoomsPage = () => {
                       <span>Need room + food?</span>
                     </span>
                     <p className="text-xs text-sandstone-light/80 leading-relaxed">
-                      Sathi pairs your room with a doorstep tiffin and scooter rental for an 8% combo discount.
+                      Tell Sathi your budget in one sentence — it matches you with rooms and doorstep tiffin nearby.
                     </p>
                     <Link
                       to="/ai"
                       className="inline-flex items-center space-x-1 text-xs font-bold text-saffron hover:underline pt-1"
                     >
-                      <span>Build Sathi Bundle</span>
+                      <span>Ask Sathi AI</span>
                       <ArrowRight className="w-3 h-3" />
                     </Link>
                   </div>

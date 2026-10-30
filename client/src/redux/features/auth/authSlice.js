@@ -87,6 +87,14 @@ export const authSlice = createSlice({
       state.isError = false
       state.message = ''
     },
+    // Patch the signed-in user in place (e.g. admin verified them as PROVIDER
+    // while their browser session still says USER) and keep localStorage in sync
+    roleUpgrade: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload }
+        localStorage.setItem('user', JSON.stringify(state.user))
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -97,7 +105,9 @@ export const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false
         state.isSuccess = true
-        state.user = action.payload
+        // Registration intentionally does NOT sign the user in:
+        // they are routed to /login to sign in with their new credentials.
+        state.user = null
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false
@@ -172,5 +182,5 @@ export const authSlice = createSlice({
   },
 })
 
-export const { reset } = authSlice.actions
+export const { reset, roleUpgrade } = authSlice.actions
 export default authSlice.reducer

@@ -20,7 +20,7 @@ const steps = [
   {
     step: '3',
     title: 'You Earn ₹200 Reward',
-    desc: 'Once your friend completes their first room tour booking or vehicle/laptop rental, you receive ₹200 in your wallet.',
+    desc: 'Once your friend completes their first room tour or meal trial booking, you receive ₹200 in your wallet.',
     icon: Wallet,
     badge: '₹200 for You'
   }

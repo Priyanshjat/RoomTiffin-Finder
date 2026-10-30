@@ -70,7 +70,7 @@ const ProfilePage = () => {
 
   const handleShareWhatsApp = () => {
     const text = encodeURIComponent(
-      `Join RoomTiffin Finder and get ₹50 welcome bonus! Use my referral code: ${user?.referralCode || ''} at http://localhost:5173/register`
+      `Join RoomTiffin Finder and get ₹50 welcome bonus! Use my referral code: ${user?.referralCode || ''} at ${window.location.origin}/register`
     )
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank')
   }
@@ -95,7 +95,7 @@ const ProfilePage = () => {
               ₹{user?.walletBalance || 0}
             </div>
             <p className="text-xs text-blue-100">
-              Redeemable against your room, tiffin, vehicle & gadget bookings!
+              Redeemable against your room and tiffin bookings!
             </p>
           </div>
 

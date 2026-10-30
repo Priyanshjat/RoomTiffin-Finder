@@ -1,7 +1,6 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { openLoginModal } from '../../redux/features/ui/uiSlice.js'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { translations } from '../../utils/translations.js'
 import { Home, Compass, Sparkles, Heart, User, Lock } from 'lucide-react'
 
@@ -9,7 +8,7 @@ const MobileBottomNav = () => {
   const { user } = useSelector((state) => state.auth)
   const { language = 'en' } = useSelector((state) => state.ui)
   const t = translations[language] || translations.en
-  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const location = useLocation()
 
   const isDarkPage = location.pathname === '/' || location.pathname === '/ai'
@@ -103,7 +102,7 @@ const MobileBottomNav = () => {
       ) : (
         <button
           type="button"
-          onClick={() => dispatch(openLoginModal())}
+          onClick={() => navigate('/login')}
           data-testid="mobile-nav-signin"
           className="flex flex-col items-center justify-center text-[10px] font-bold opacity-70 hover:opacity-100 transition flex-1 py-1"
         >

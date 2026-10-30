@@ -22,10 +22,9 @@ import {
 } from 'lucide-react'
 
 const sampleQueries = [
-  { label: 'Single room in HSR Layout', query: 'single room with WiFi in HSR Layout under 9000' },
-  { label: 'Pure veg tiffin Koramangala', query: 'pure veg tiffin under 3500 in Koramangala' },
-  { label: 'Automatic Activa scooter', query: 'automatic Activa scooter in HSR Layout for one week' },
-  { label: 'ThinkPad / MacBook rental', query: 'MacBook or ThinkPad laptop under 1200 per week' },
+  { label: 'Single room in Bhawarkuan', query: 'single room with WiFi in Bhawarkuan under 8000' },
+  { label: 'Pure veg tiffin Vijay Nagar', query: 'pure veg tiffin under 3500 in Vijay Nagar' },
+  { label: 'Room near college', query: 'room or PG near DAVV under 9000 with wifi' },
   { label: 'Test Unclear Intent', query: 'something affordable for work' }
 ]
 
@@ -120,7 +119,7 @@ const HeroSection = () => {
                     type="text"
                     value={inputVal}
                     onChange={(e) => setInputVal(e.target.value)}
-                    placeholder="Ask naturally: 'single room in HSR under 9000' or 'automatic scooter for 1 week'..."
+                    placeholder="Ask naturally: 'single room in Bhawarkuan under 8000' or 'pure veg tiffin near Vijay Nagar'..."
                     data-testid="ai-search-input"
                     className="w-full py-2 px-1 text-xs sm:text-sm text-espresso placeholder-espresso-light/70 focus:outline-none bg-transparent font-medium"
                   />
@@ -219,7 +218,7 @@ const HeroSection = () => {
                 </div>
                 <div className="p-3 rounded-2xl bg-sandstone-light border border-sandstone-border">
                   <div className="font-serif text-xl font-bold text-slate-800">2-Hour</div>
-                  <div className="text-[11px] text-espresso-muted">Laptop Handover</div>
+                  <div className="text-[11px] text-espresso-muted">Verified Hosts</div>
                 </div>
               </div>
             </div>

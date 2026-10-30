@@ -7,15 +7,133 @@ import {
   Briefcase,
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   CheckCircle,
   Clock,
   Building,
   Phone,
   MapPin,
-  Loader2
+  Loader2,
+  Pencil,
+  Save
 } from 'lucide-react'
+
+// Shared form fields used for both new applications and editing a pending application
+const ProviderFormFields = ({ data, setData }) => {
+  const onChange = (e) => {
+    setData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }))
+  }
+
+  return (
+    <>
+      <div>
+        <label className="block text-sm font-semibold text-gray-800 mb-2">
+          Select Your Primary Service *
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { type: 'ROOM', label: 'Room / PG', icon: Home },
+            { type: 'TIFFIN', label: 'Tiffin / Mess', icon: UtensilsCrossed },
+          ].map((item) => {
+            const Icon = item.icon
+            const selected = data.providerType === item.type
+            return (
+              <button
+                type="button"
+                key={item.type}
+                onClick={() => setData((prev) => ({ ...prev, providerType: item.type }))}
+                className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition ${
+                  selected
+                    ? 'border-blue-600 bg-blue-50 text-blue-700 font-bold ring-2 ring-blue-600'
+                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                }`}
+              >
+                <Icon className={`w-5 h-5 mb-1 ${selected ? 'text-blue-600' : 'text-gray-500'}`} />
+                <span className="text-xs">{item.label}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Business / Hostel / Service Name *
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <Building className="w-5 h-5" />
+          </div>
+          <input
+            type="text"
+            name="businessName"
+            value={data.businessName}
+            onChange={onChange}
+            required
+            placeholder="e.g. Sharma PG & Rooms / Annapurna Rasoi"
+            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Contact / Booking Phone Number *
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <Phone className="w-5 h-5" />
+          </div>
+          <input
+            type="tel"
+            name="contactNumber"
+            value={data.contactNumber}
+            onChange={onChange}
+            required
+            placeholder="9876543210"
+            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Business Address / Operating Area (Indore) *
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <MapPin className="w-5 h-5" />
+          </div>
+          <input
+            type="text"
+            name="businessAddress"
+            value={data.businessAddress}
+            onChange={onChange}
+            required
+            placeholder="e.g. Scheme 54, Near C21 Mall, Vijay Nagar, Indore"
+            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description / Facilities Summary
+        </label>
+        <textarea
+          name="description"
+          rows={3}
+          value={data.description}
+          onChange={onChange}
+          placeholder="Tell tenants about your rooms or meal plans..."
+          className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+    </>
+  )
+}
 
 const ApplyProviderPage = () => {
   const { user } = useSelector((state) => state.auth)
@@ -24,6 +142,9 @@ const ApplyProviderPage = () => {
   const [existingProfile, setExistingProfile] = useState(null)
   const [fetchingProfile, setFetchingProfile] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [editingApplication, setEditingApplication] = useState(false)
+  const [editData, setEditData] = useState(null)
+  const [savingChanges, setSavingChanges] = useState(false)
 
   const [formData, setFormData] = useState({
     businessName: '',
@@ -51,13 +172,6 @@ const ApplyProviderPage = () => {
     }
   }, [user])
 
-  const onChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
-
   const onSubmit = async (e) => {
     e.preventDefault()
 
@@ -75,6 +189,31 @@ const ApplyProviderPage = () => {
       toast.error(err || 'Failed to submit application')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const onUpdate = async (e) => {
+    e.preventDefault()
+
+    if (!editData.businessName || !editData.providerType || !editData.contactNumber || !editData.businessAddress) {
+      toast.warning('Please fill in all required fields')
+      return
+    }
+
+    setSavingChanges(true)
+    try {
+      const updated = await authService.updateProviderProfile(editData)
+      setExistingProfile(updated)
+      setEditingApplication(false)
+      toast.success('Application details updated successfully!')
+    } catch (err) {
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Failed to update application'
+      toast.error(message)
+    } finally {
+      setSavingChanges(false)
     }
   }
 
@@ -124,6 +263,56 @@ const ApplyProviderPage = () => {
                 <div><strong>Contact:</strong> {existingProfile.contactNumber}</div>
                 <div><strong>Status:</strong> <span className="text-amber-600 font-bold">Pending Admin Verification</span></div>
               </div>
+
+              {editingApplication ? (
+                <form onSubmit={onUpdate} className="mt-6 max-w-md mx-auto text-left space-y-5">
+                  <ProviderFormFields data={editData} setData={setEditData} />
+                  <div className="flex items-center justify-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setEditingApplication(false)}
+                      className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-sm rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingChanges}
+                      className="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg shadow-sm disabled:opacity-50"
+                    >
+                      {savingChanges ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Update Application
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditData({
+                      businessName: existingProfile.businessName || '',
+                      providerType: existingProfile.providerType || 'ROOM',
+                      contactNumber: existingProfile.contactNumber || '',
+                      businessAddress: existingProfile.businessAddress || '',
+                      description: existingProfile.description || '',
+                    })
+                    setEditingApplication(true)
+                  }}
+                  className="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg shadow-sm"
+                >
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit Application Details
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -140,117 +329,12 @@ const ApplyProviderPage = () => {
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Become a Verified Provider</h1>
           <p className="text-sm text-gray-500 mt-1">
-            List your rental rooms, homestyle tiffins, scooty/bikes, or gadgets in Indore
+            List your rental rooms and homestyle tiffins in Indore
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-5">
-          {/* Provider Type Selection */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-800 mb-2">
-              Select Your Primary Service *
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { type: 'ROOM', label: 'Room / PG', icon: Home },
-                { type: 'TIFFIN', label: 'Tiffin / Mess', icon: UtensilsCrossed },
-                { type: 'VEHICLE', label: 'Vehicle / Bike', icon: Bike },
-                { type: 'DEVICE', label: 'Laptop / PC', icon: Laptop },
-              ].map((item) => {
-                const Icon = item.icon
-                const selected = formData.providerType === item.type
-                return (
-                  <button
-                    type="button"
-                    key={item.type}
-                    onClick={() => setFormData({ ...formData, providerType: item.type })}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition ${
-                      selected
-                        ? 'border-blue-600 bg-blue-50 text-blue-700 font-bold ring-2 ring-blue-600'
-                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 mb-1 ${selected ? 'text-blue-600' : 'text-gray-500'}`} />
-                    <span className="text-xs">{item.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Business / Hostel / Service Name *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <Building className="w-5 h-5" />
-              </div>
-              <input
-                type="text"
-                name="businessName"
-                value={formData.businessName}
-                onChange={onChange}
-                required
-                placeholder="e.g. Sharma PG & Rooms / Annapurna Rasoi"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contact / Booking Phone Number *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <Phone className="w-5 h-5" />
-              </div>
-              <input
-                type="tel"
-                name="contactNumber"
-                value={formData.contactNumber}
-                onChange={onChange}
-                required
-                placeholder="9876543210"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Business Address / Operating Area (Indore) *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <MapPin className="w-5 h-5" />
-              </div>
-              <input
-                type="text"
-                name="businessAddress"
-                value={formData.businessAddress}
-                onChange={onChange}
-                required
-                placeholder="e.g. Scheme 54, Near C21 Mall, Vijay Nagar, Indore"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description / Facilities Summary
-            </label>
-            <textarea
-              name="description"
-              rows={3}
-              value={formData.description}
-              onChange={onChange}
-              placeholder="Tell tenants about your rooms, meal plans, vehicles, or devices..."
-              className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <ProviderFormFields data={formData} setData={setFormData} />
 
           <div className="pt-2">
             <button

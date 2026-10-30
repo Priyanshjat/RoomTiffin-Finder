@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { openLoginModal } from '../../redux/features/ui/uiSlice.js'
 import {
   useContactProvider,
-  useCreateBooking,
-  useCreateRentalRequest
+  useCreateBooking
 } from '../../hooks/useListings.js'
 import { useWallet } from '../../hooks/useReferral.js'
+import { fallbackListingImage } from '../../utils/listingImages.js'
 import { toast } from 'sonner'
 import {
   X,
@@ -24,10 +24,6 @@ import {
   Send,
   Loader2,
   Wallet,
-  Cpu,
-  Fuel,
-  Users,
-  Gauge,
   Utensils,
   Soup,
   Home,
@@ -36,9 +32,7 @@ import {
 
 const actionLabels = {
   rooms: { button: 'Schedule Free Room Tour', title: 'Schedule a Free Room Tour', helper: 'Visit the room or PG in person with the verified host.' },
-  tiffin: { button: 'Order Sample Meal Trial', title: 'Order Sample Tiffin Trial', helper: 'Taste the homestyle cooking before committing to a monthly plan.' },
-  vehicles: { button: 'Request Vehicle Booking', title: 'Request Vehicle Booking', helper: 'Reserve this vehicle with zero advance cancellation fees.' },
-  laptops: { button: 'Request Laptop Rental', title: 'Request Laptop Dispatch', helper: 'Get this device delivered to your doorstep with refundable security deposit.' }
+  tiffin: { button: 'Order Sample Meal Trial', title: 'Order Sample Tiffin Trial', helper: 'Taste the homestyle cooking before committing to a monthly plan.' }
 }
 
 const ListingDetailModal = ({ listing, onClose }) => {
@@ -57,7 +51,6 @@ const ListingDetailModal = ({ listing, onClose }) => {
 
   const contactMutation = useContactProvider()
   const bookingMutation = useCreateBooking()
-  const rentalMutation = useCreateRentalRequest()
 
   if (!listing) return null
 
@@ -65,13 +58,13 @@ const ListingDetailModal = ({ listing, onClose }) => {
   const maxDeductible = Math.min(availableCredit, 100) // apply up to ₹100 credit on trial/tour or booking
 
   const images = listing.images && listing.images.length > 0 ? listing.images : [
-    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1000&q=80'
+    fallbackListingImage(listing, listing.category)
   ]
 
   const actionConfig = actionLabels[listing.category] || {
     button: 'Submit Request',
-    title: 'Submit Rental Request',
-    helper: 'Contact the owner to initiate this rental.'
+    title: 'Submit Booking Request',
+    helper: 'Contact the owner to initiate this booking.'
   }
 
   const handleActionClick = () => {
@@ -88,27 +81,15 @@ const ListingDetailModal = ({ listing, onClose }) => {
     const creditToUse = applyWalletCredit ? maxDeductible : 0
 
     try {
-      if (listing.category === 'rooms' || listing.category === 'tiffin') {
-        await bookingMutation.mutateAsync({
-          listingId: listing._id || listing.id,
-          category: listing.category,
-          date: requestDate || new Date().toISOString().split('T')[0],
-          slot: requestSlot,
-          notes: requestNotes,
-          applyCredit: creditToUse
-        })
-        toast.success(`Success! Your request has been sent to ${listing.provider?.name}.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
-      } else {
-        await rentalMutation.mutateAsync({
-          listingId: listing._id || listing.id,
-          category: listing.category,
-          duration: requestSlot,
-          startDate: requestDate || new Date().toISOString().split('T')[0],
-          deliveryOption: 'Doorstep Delivery',
-          applyCredit: creditToUse
-        })
-        toast.success(`Success! Rental placed. Provider will reach out via WhatsApp.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
-      }
+      await bookingMutation.mutateAsync({
+        listingId: listing._id || listing.id,
+        category: listing.category,
+        date: requestDate || new Date().toISOString().split('T')[0],
+        slot: requestSlot,
+        notes: requestNotes,
+        applyCredit: creditToUse
+      })
+      toast.success(`Success! Your request has been sent to ${listing.provider?.name}.${creditToUse > 0 ? ` ₹${creditToUse} wallet discount applied!` : ''}`)
       setShowRequestForm(false)
     } catch (err) {
       toast.error('Failed to submit request. Please try again.')
@@ -320,58 +301,6 @@ const ListingDetailModal = ({ listing, onClose }) => {
             </div>
           )}
 
-          {/* 3. VEHICLES SPECIFIC PANEL */}
-          {listing.category === 'vehicles' && (
-            <div className="space-y-3 p-4 rounded-2xl bg-emerald-light/40 border border-emerald/30" data-testid="vehicle-specific-panel">
-              <h4 className="font-serif text-base font-bold text-espresso flex items-center space-x-1.5">
-                <Gauge className="w-4 h-4 text-emerald" />
-                <span>Vehicle Specification Rail & Deposit Rules</span>
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                <div className="p-2.5 bg-white rounded-xl border border-emerald/20 text-center">
-                  <div className="text-[10px] text-espresso-muted font-bold uppercase">Transmission</div>
-                  <div className="font-bold text-espresso capitalize">{listing.transmission || 'Automatic'}</div>
-                </div>
-                <div className="p-2.5 bg-white rounded-xl border border-emerald/20 text-center">
-                  <div className="text-[10px] text-espresso-muted font-bold uppercase">Fuel Type</div>
-                  <div className="font-bold text-espresso">{listing.fuel || 'Petrol'}</div>
-                </div>
-                <div className="p-2.5 bg-white rounded-xl border border-emerald/20 text-center">
-                  <div className="text-[10px] text-espresso-muted font-bold uppercase">Daily Allowance</div>
-                  <div className="font-bold text-emerald">120 km/day</div>
-                </div>
-                <div className="p-2.5 bg-white rounded-xl border border-emerald/20 text-center">
-                  <div className="text-[10px] text-espresso-muted font-bold uppercase">Security Deposit</div>
-                  <div className="font-bold text-espresso">₹{listing.deposit || 1000}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 4. LAPTOPS SPECIFIC PANEL */}
-          {listing.category === 'laptops' && (
-            <div className="space-y-3 p-4 rounded-2xl bg-slate-100 border border-slate-300" data-testid="laptop-specific-panel">
-              <h4 className="font-serif text-base font-bold text-espresso flex items-center space-x-1.5">
-                <Cpu className="w-4 h-4 text-slate-700" />
-                <span>Workstation Hardware Diagnostics & Benchmark</span>
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Processor</div>
-                  <div className="font-bold text-slate-900 truncate">{listing.processor || 'Core i7 / Apple Silicon'}</div>
-                </div>
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">RAM & Storage</div>
-                  <div className="font-bold text-slate-900">{listing.ram || '16 GB'} • {listing.storage || '512 GB SSD'}</div>
-                </div>
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Operating System</div>
-                  <div className="font-bold text-slate-900">{listing.os || 'Windows 11 / Ubuntu'}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Features / Amenities Badges */}
           {listing.features && (
             <div className="space-y-2">
@@ -422,7 +351,7 @@ const ListingDetailModal = ({ listing, onClose }) => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold text-espresso mb-1">Preferred Slot / Duration</label>
+                    <label className="block text-[11px] font-bold text-espresso mb-1">Preferred Slot</label>
                     <select
                       value={requestSlot}
                       onChange={(e) => setRequestSlot(e.target.value)}
@@ -432,8 +361,6 @@ const ListingDetailModal = ({ listing, onClose }) => {
                       <option value="Morning (10:00 AM - 12:00 PM)">Morning (10:00 AM - 12:00 PM)</option>
                       <option value="Afternoon (1:00 PM - 3:00 PM)">Afternoon (1:00 PM - 3:00 PM)</option>
                       <option value="Evening (5:00 PM - 7:00 PM)">Evening (5:00 PM - 7:00 PM)</option>
-                      <option value="1 Week">1 Week Rental</option>
-                      <option value="1 Month">1 Month Subscription</option>
                     </select>
                   </div>
                 </div>

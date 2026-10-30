@@ -68,7 +68,7 @@ const ReferralPage = () => {
   // Social Share actions
   const handleWhatsAppShare = () => {
     const text = encodeURIComponent(
-      `Hey! Find verified rooms, PGs, tiffin meal plans, and rental laptops/scooters in Bengaluru on RoomTiffin Finder. Use my code ${referralCode} to get ₹100 instant wallet credit: ${shareUrl}`
+      `Hey! Find verified rooms, PGs, and homestyle tiffin meal plans in Indore on RoomTiffin Finder. Use my code ${referralCode} to get ₹100 instant wallet credit: ${shareUrl}`
     )
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank')
   }
@@ -129,7 +129,7 @@ const ReferralPage = () => {
             Refer Friends & Earn Wallet Credits
           </h1>
           <p className="text-xs sm:text-sm text-espresso-muted leading-relaxed">
-            Give ₹100 welcome credit to your friends when they join. Earn ₹200 in your wallet whenever they book a stay or rent a ride or laptop.
+            Give ₹100 welcome credit to your friends when they join. Earn ₹200 in your wallet whenever they book a room tour or meal trial.
           </p>
         </div>
 

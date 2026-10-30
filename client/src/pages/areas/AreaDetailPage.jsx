@@ -11,8 +11,6 @@ import {
   Sparkles,
   Home,
   UtensilsCrossed,
-  Bike,
-  Laptop,
   GraduationCap,
   Bus,
   CheckCircle2,
@@ -161,17 +159,17 @@ const AreaDetailPage = () => {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <h3 className="font-serif font-bold text-base text-white">
-                  Bundle your move to {areaData.name}
+                  Moving to {areaData.name}? Ask Sathi
                 </h3>
                 <p className="text-xs text-sandstone-light/70 leading-relaxed">
-                  Tell Sathi your budget. Get a synced Room + Tiffin + Ride starter pack in this area with zero brokerage.
+                  Tell Sathi your budget and lifestyle in one sentence — English, Hindi ya Hinglish. Get matched rooms and tiffin services in this area with zero brokerage.
                 </p>
               </div>
               <Link
-                to={`/ai?area=${areaData.slug}`}
+                to={`/ai?q=${encodeURIComponent(`room in ${areaData.name} under 10000`)}`}
                 className="w-full inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-saffron hover:bg-saffron-light text-midnight font-bold text-xs transition"
               >
-                <span>Ask Sathi to Plan</span>
+                <span>Ask Sathi to Search</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -186,7 +184,7 @@ const AreaDetailPage = () => {
                 Listings in {areaData.name}
               </h2>
               <p className="text-xs text-espresso-light">
-                Verified rooms, home tiffins, rides and laptops available in this neighborhood
+                Verified rooms and home tiffins available in this neighborhood
               </p>
             </div>
 
@@ -195,9 +193,7 @@ const AreaDetailPage = () => {
               {[
                 { id: 'all', label: 'All' },
                 { id: 'rooms', label: 'Rooms' },
-                { id: 'tiffin', label: 'Tiffins' },
-                { id: 'vehicles', label: 'Vehicles' },
-                { id: 'laptops', label: 'Laptops' }
+                { id: 'tiffin', label: 'Tiffins' }
               ].map(tab => (
                 <button
                   key={tab.id}

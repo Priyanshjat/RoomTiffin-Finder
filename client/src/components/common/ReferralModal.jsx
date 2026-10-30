@@ -34,7 +34,7 @@ const ReferralModal = () => {
 
   const handleWhatsAppShare = () => {
     const text = encodeURIComponent(
-      `Hey! Find verified student rooms, home tiffins, scooties, and laptops in Indore (Bhawarkua, Vijay Nagar, Palasia) on RoomTiffin Finder. Use my invite code "${referralCode}" to get ₹50 welcome wallet credits on sign up! Check it out: http://localhost:5173`
+      `Hey! Find verified student rooms and home tiffins in Indore (Bhawarkua, Vijay Nagar, Palasia) on RoomTiffin Finder. Use my invite code "${referralCode}" to get ₹50 welcome wallet credits on sign up! Check it out: ${window.location.origin}`
     )
     window.open(`https://wa.me/?text=${text}`, '_blank')
   }

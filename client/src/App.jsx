@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
 // Common Components
@@ -23,8 +23,6 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage.jsx'
 import ProviderDashboardPage from './pages/provider/ProviderDashboardPage.jsx'
 import RoomsPage from './pages/rooms/RoomsPage.jsx'
 import TiffinsPage from './pages/tiffins/TiffinsPage.jsx'
-import VehiclesPage from './pages/vehicles/VehiclesPage.jsx'
-import DevicesPage from './pages/devices/DevicesPage.jsx'
 import AiSearchPage from './pages/ai/AiSearchPage.jsx'
 import ReferralPage from './pages/referral/ReferralPage.jsx'
 import SavedPage from './pages/saved/SavedPage.jsx'
@@ -35,9 +33,19 @@ import AreaDetailPage from './pages/areas/AreaDetailPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 
 function App() {
+  const location = useLocation()
+
+  // Immersive auth pages (login / signup) render their own full-screen layout —
+  // hide the global navbar + mobile bottom nav there.
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+
   return (
-    <div className="flex flex-col min-h-screen bg-sandstone text-espresso font-sans pb-16 md:pb-0">
-      <Navbar />
+    <div
+      className={`flex flex-col min-h-screen bg-sandstone text-espresso font-sans ${
+        isAuthPage ? '' : 'pb-16 md:pb-0'
+      }`}
+    >
+      {!isAuthPage && <Navbar />}
 
       <main className="flex-grow">
         <Routes>
@@ -56,12 +64,6 @@ function App() {
           <Route path="/tiffins" element={<TiffinsPage />} />
           <Route path="/tiffin/:id" element={<ListingDetailPage />} />
           <Route path="/tiffins/:id" element={<ListingDetailPage />} />
-          <Route path="/vehicles" element={<VehiclesPage />} />
-          <Route path="/vehicles/:id" element={<ListingDetailPage />} />
-          <Route path="/laptops" element={<DevicesPage />} />
-          <Route path="/devices" element={<DevicesPage />} />
-          <Route path="/laptops/:id" element={<ListingDetailPage />} />
-          <Route path="/devices/:id" element={<ListingDetailPage />} />
           <Route path="/listing/:id" element={<ListingDetailPage />} />
 
           {/* AI Companion Sathi */}
@@ -92,14 +94,14 @@ function App() {
         </Routes>
       </main>
 
-      <Footer />
+      {!isAuthPage && <Footer />}
 
       {/* Global Modals */}
       <LoginModal />
       <ReferralModal />
 
       {/* Mobile Sticky Navigation */}
-      <MobileBottomNav />
+      {!isAuthPage && <MobileBottomNav />}
 
       {/* Developer-only Toolbar (controlled via VITE_DEV_DEMO_MODE=true) */}
       <DevToolbar />

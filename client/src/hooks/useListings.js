@@ -5,7 +5,7 @@ import {
   parseAiQuery,
   sendContactInquiry,
   requestBooking,
-  submitRentalRequest
+  fetchMyBookings
 } from '../services/listingService.js'
 
 // Hook to query listings with filters
@@ -51,17 +51,17 @@ export const useCreateBooking = () => {
     mutationFn: (data) => requestBooking(data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['listing', variables.listingId] })
+      queryClient.invalidateQueries({ queryKey: ['my-requests'] })
     }
   })
 }
 
-// Mutation to request vehicle or laptop rental
-export const useCreateRentalRequest = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (data) => submitRentalRequest(data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['listing', variables.listingId] })
-    }
+// Hook for the Requests page — room tour / meal trial requests
+export const useMyRequests = (enabled = true) => {
+  return useQuery({
+    queryKey: ['my-requests'],
+    queryFn: fetchMyBookings,
+    enabled: Boolean(enabled),
+    staleTime: 15 * 1000
   })
 }

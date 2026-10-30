@@ -36,6 +36,13 @@ const providerSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    // One-time flag: a verified provider with zero listings gets a draft
+    // listing auto-created from their application data (so their service
+    // shows up in the dashboard immediately).
+    draftListingCreated: {
+        type: Boolean,
+        default: false
+    },
     isActive: {
         type: Boolean,
         default: true

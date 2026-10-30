@@ -4,11 +4,9 @@ import API from './api.js'
 const registerUser = async (formData) => {
   const response = await API.post('/auth/register', formData)
   const data = response.data.data || response.data
-  const userWithToken = data.user ? { ...data.user, token: data.token } : data
-  if (userWithToken && userWithToken.token) {
-    localStorage.setItem('user', JSON.stringify(userWithToken))
-  }
-  return userWithToken
+  // NOTE: no token is persisted here on purpose — registration routes the
+  // user to the Login page instead of starting a session.
+  return data.user ? { ...data.user, token: null } : data
 }
 
 // Login User (Matches user specification)
@@ -64,6 +62,12 @@ const getMyProviderProfile = async () => {
   return response.data.data || response.data
 }
 
+// Update Provider Application (while pending admin verification) - PUT /api/provider/profile
+const updateProviderProfile = async (providerData) => {
+  const response = await API.put('/provider/profile', providerData)
+  return response.data.data || response.data
+}
+
 const authService = {
   registerUser,
   loginUser,
@@ -75,7 +79,8 @@ const authService = {
   logout,
   demoLogin,
   applyProvider,
-  getMyProviderProfile
+  getMyProviderProfile,
+  updateProviderProfile
 }
 
 export default authService
