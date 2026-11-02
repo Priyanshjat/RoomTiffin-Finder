@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import PageTransition from '../components/common/PageTransition.jsx'
+import { openLoginModal } from '../redux/features/ui/uiSlice.js'
 import {
   Sparkles,
   ArrowRight,
@@ -102,6 +103,7 @@ const INDORE_AREAS = [
 
 const HomePage = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
 
   // Natural Language Prompt State
@@ -176,6 +178,10 @@ const HomePage = () => {
   // Submit natural language query
   const handleSubmitPrompt = (e) => {
     e?.preventDefault()
+    if (!user) {
+      dispatch(openLoginModal('Sign in to use Sathi AI search.'))
+      return
+    }
     const query = promptText.trim() || INDORE_PROMPTS[placeholderIndex]
     navigate(`/ai?q=${encodeURIComponent(query)}`)
   }

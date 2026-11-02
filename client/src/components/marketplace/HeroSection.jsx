@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import {
   setSearchQuery,
   setAiParsedData,
-  setActiveCategory
+  setActiveCategory,
+  openLoginModal
 } from '../../redux/features/ui/uiSlice.js'
 import { useAiParse } from '../../hooks/useListings.js'
 import {
@@ -31,6 +32,7 @@ const sampleQueries = [
 const HeroSection = () => {
   const [inputVal, setInputVal] = useState('')
   const dispatch = useDispatch()
+  const { user } = useSelector((state) => state.auth)
   const aiParseMutation = useAiParse()
 
   // Time-aware greeting
@@ -44,6 +46,12 @@ const HeroSection = () => {
   const handleSearchSubmit = async (queryText) => {
     const q = queryText || inputVal
     if (!q.trim()) return
+
+    // AI search is for signed-in users only
+    if (!user) {
+      dispatch(openLoginModal('Sign in to use Sathi AI search.'))
+      return
+    }
 
     dispatch(setSearchQuery(q))
 

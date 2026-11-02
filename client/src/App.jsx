@@ -66,9 +66,7 @@ function App() {
           <Route path="/tiffins/:id" element={<ListingDetailPage />} />
           <Route path="/listing/:id" element={<ListingDetailPage />} />
 
-          {/* AI Companion Sathi */}
-          <Route path="/ai" element={<AiSearchPage />} />
-          <Route path="/ai-search" element={<AiSearchPage />} />
+          {/* AI Companion Sathi (signed-in users only) */}
 
           {/* Indore Neighborhood Pages */}
           <Route path="/areas/:slug" element={<AreaDetailPage />} />
@@ -77,6 +75,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/apply-provider" element={<ApplyProviderPage />} />
+            <Route path="/ai" element={<AiSearchPage />} />
+            <Route path="/ai-search" element={<AiSearchPage />} />
           </Route>
 
           {/* Verified Provider Protected Routes */}

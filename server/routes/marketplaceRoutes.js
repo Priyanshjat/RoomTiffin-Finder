@@ -23,6 +23,7 @@ import {
 } from "../controllers/marketplaceController.js"
 import { parseNaturalLanguageQuery } from "../controllers/ai/aiController.js"
 import { aiRateLimiter } from "../middleware/rateLimitMiddleware.js"
+import protect from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
@@ -35,8 +36,8 @@ router.get("/areas", getAreas)
 router.get("/areas/:slug", getAreaBySlug)
 router.get("/colleges", getColleges)
 
-// AI Natural Language Query Parser (Rate Limited)
-router.post("/ai/parse", aiRateLimiter, parseNaturalLanguageQuery)
+// AI Natural Language Query Parser (Rate Limited, signed-in users only)
+router.post("/ai/parse", aiRateLimiter, protect.forUser, parseNaturalLanguageQuery)
 
 // Interaction & Protection Actions
 router.post("/contact", contactProvider)
