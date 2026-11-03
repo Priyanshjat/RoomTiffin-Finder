@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
 import { useCreateBooking } from '../../hooks/useListings.js'
@@ -48,13 +49,15 @@ const OrderTrialModal = ({ tiffin, onClose }) => {
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+  // Portal to document.body: position:fixed breaks inside PageTransition's
+  // transformed wrapper, which pinned this modal to the scrolled page.
+  return createPortal(
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-start sm:items-center justify-center p-4 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="bg-white rounded-3xl border border-sandstone-border shadow-2xl max-w-lg w-full overflow-hidden text-espresso"
+        className="bg-white rounded-3xl border border-sandstone-border shadow-2xl max-w-lg w-full overflow-hidden text-espresso my-auto max-h-[92vh] flex flex-col"
       >
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-[#2E7D5B] to-[#1E563E] text-white p-5 flex items-start justify-between">
@@ -79,7 +82,7 @@ const OrderTrialModal = ({ tiffin, onClose }) => {
         </div>
 
         {/* Modal Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-xs overflow-y-auto">
           {/* Trial Pricing Card */}
           <div className="p-4 rounded-2xl bg-[#FEF7E6] border border-[#D99B26]/30 flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -193,7 +196,8 @@ const OrderTrialModal = ({ tiffin, onClose }) => {
           </div>
         </form>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   )
 }
 

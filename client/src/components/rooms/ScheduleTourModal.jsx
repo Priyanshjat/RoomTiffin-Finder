@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useCreateBooking } from '../../hooks/useListings.js'
@@ -55,13 +56,15 @@ const ScheduleTourModal = ({ room, onClose }) => {
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+  // Portal to document.body: position:fixed breaks inside PageTransition's
+  // transformed wrapper, which pinned this modal to the scrolled page.
+  return createPortal(
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-start sm:items-center justify-center p-4 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="bg-white rounded-3xl border border-sandstone-border shadow-2xl max-w-lg w-full overflow-hidden text-espresso"
+        className="bg-white rounded-3xl border border-sandstone-border shadow-2xl max-w-lg w-full overflow-hidden text-espresso my-auto max-h-[92vh] flex flex-col"
       >
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-[#2B1E16] to-[#3D281D] text-white p-5 flex items-start justify-between">
@@ -86,7 +89,7 @@ const ScheduleTourModal = ({ room, onClose }) => {
         </div>
 
         {/* Modal Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-xs overflow-y-auto">
           {/* Tour Format Toggle */}
           <div className="space-y-2">
             <label className="font-bold text-espresso uppercase tracking-wider">
@@ -224,8 +227,8 @@ const ScheduleTourModal = ({ room, onClose }) => {
           </div>
         </form>
       </motion.div>
-    </div>
+    </div>,
+    document.body
   )
 }
-
 export default ScheduleTourModal
